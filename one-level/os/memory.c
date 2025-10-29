@@ -61,12 +61,13 @@ int MemoryGetSize() {
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
   dbprintf('m', "MemoryModuleInit (%d): marking pages in use in freemap through page %d\n", GetCurrentPid(), lastosaddress); 
-  for (int i = 0; i < 16; i++) //TODO: derive 16
+  int i;
+  for (i = 0; i < 16; i++) //TODO: derive 16
   {
     freemap[i] = 0x00000000;
   }
 
-  for (int i = 0; i < lastosaddress; i++)
+  for (i = 0; i < lastosaddress; i++)
   {
     // i / 32 is which freemap entry this falls on
     // i % 32 is which bit in the entry it falls on
