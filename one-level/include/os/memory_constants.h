@@ -27,12 +27,12 @@
 
 // bit position of the least significant bit of the level 1 page number field in a virtual address.
 // Ex: 0000 0000 0000 0000 000_ | 0000 0000 0000
-#define MEM_L1FIELD_FIRST_BITNUM 13
+#define MEM_L1FIELD_FIRST_BITNUM 12
 // the maximum allowable address in the virtual address space. Note that this is not the 4-byte-aligned address, 
 //but rather the actual maximum address (it should end with 0xF).
 #define MAX_VIRTUAL_ADDRESS 0xFFFFF
 // 2MB in bytes = 2097152. /4 (for uint32) is 524288.
-#define MEM_MAX_PHYS_MEM 512
+#define MEM_MAX_PHYS_MEM 524288
 //If this bit is set in a PTE, it means that the page should be marked readonly. We will ONLY set this bit when 
 //implementing fork is required, so be sure to set it to zero for now.
 #define MEM_PTE_READONLY 0x4
@@ -41,6 +41,11 @@
 #define MEM_PTE_DIRTY 0x2
 //If this bit is set to 1, then the PTE is considered to contain a valid physical page address.
 #define MEM_PTE_VALID 0x1
+
+#define MEM_PAGE_SIZE 0x1 << MEM_L1FIELD_FIRST_BITNUM
+//should be the bit mask required to get just the
+    // "offset" portion of an address.
+#define MEM_ADDRESS_OFFSET_MASK 0xFFF
 
 // 2MB of physical memory in 4KB pages, which is 512 pages.
 

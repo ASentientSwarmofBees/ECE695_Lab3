@@ -86,6 +86,7 @@ void MemoryModuleInit() {
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   //TODO
+  return 0;
 }
 
 
