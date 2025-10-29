@@ -200,7 +200,8 @@ int MemoryPageFaultHandler(PCB *pcb) {
 // Returns the page number allocated or -1 if full
 int MemoryAllocPage(void) {
   //USEABLE IF 0, IN USE IF 1
-  for (int i = 0; i < 512; i++)
+  int i;
+  for (i = 0; i < 512; i++)
   {
     if (!(freemap[i / 32] & (0x1 << (i % 32))))
     {
