@@ -41,7 +41,8 @@ typedef struct PCB {
   uint32	sysStackArea;	// System stack area for this process
   unsigned int	flags;
   char		name[80];	// Process name
-  uint32	pagetable[/* Put the size of the L1 page table here */]; // Statically allocated page table
+  /* Put the size of the L1 page table here in pagetable[?] */
+  uint32	pagetable[512]; // Statically allocated page table, TODO: should be derived from memory_constants.h?
   int		npages;		// Number of pages allocated to this process
   Link		*l;		// Used for keeping PCB in queues
 } PCB;
@@ -58,9 +59,19 @@ extern PCB	*currentPCB;
 #define	PROCESS_STACK_ISR	(PROCESS_STACK_IAR+1)
 #define	PROCESS_STACK_CAUSE	(PROCESS_STACK_IAR+2)
 #define	PROCESS_STACK_FAULT	(PROCESS_STACK_IAR+3)
+//base address of the level 1 page table
 #define	PROCESS_STACK_PTBASE	(PROCESS_STACK_IAR+4)
+//maximum number of entries in the level 1 page table
 #define	PROCESS_STACK_PTSIZE	(PROCESS_STACK_IAR+5)
+//this register contains two different pieces of information, one in the upper 16 bits, and one in the lower 16 
+//bits. The number in the lower 16 bits indicates the bit position of the least significant bit of the level 1 
+//page number field in a virtual address. The number in the upper 16 bits indicates the bit position of the least 
+//significant bit of the level 2 page table field in a virtual address. As a special case, if the two numbers are 
+//the same, then the hardware assumes that there are no level 2 page tables and uses only one-level address 
+//translation. In this lab, we will not deal with level 2 page tables
 #define	PROCESS_STACK_PTBITS	(PROCESS_STACK_IAR+6)
+//this is the initial stack pointer for the user process. This should be set to the highest 4-byte-aligned 
+//address in the virtual memory space.
 #define PROCESS_STACK_USER_STACKPOINTER  (PROCESS_STACK_IREG + 29) // r29 is user stack pointer
 #define	PROCESS_STACK_PREV_FRAME 10	// points to previous interrupt frame
 #define	PROCESS_STACK_FRAME_SIZE 85	// interrupt frame is 85 words
@@ -80,8 +91,6 @@ extern PCB	*currentPCB;
 // sure to prefix their names with "PROCESS_" so the
 // grader knows that they are defined in this file.
 //---------------------------------------------------------
-
-
 
 //---------------------------------------------------------
 // Existing function Prototypes

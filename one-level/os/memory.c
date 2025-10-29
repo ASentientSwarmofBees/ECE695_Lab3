@@ -14,7 +14,9 @@
 #include "queue.h"
 
 // num_pages = size_of_memory / size_of_one_page
-static uint32 freemap[/*size*/];
+// 2MB / 4KB = 512 physical pages
+// 512 pages, 1 bit per page = 16 uint32 freemap entries
+static uint32 freemap[16]; //TODO: find a way to generate from memory constants
 static uint32 pagestart;
 static int nfreepages;
 static int freemapmax;
@@ -58,6 +60,18 @@ int MemoryGetSize() {
 //
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
+  dbprintf('m', "MemoryModuleInit (%d): marking pages in use in freemap through page %d\n", GetCurrentPid(), lastosaddress); 
+  for (int i = 0; i < 16; i++) //TODO: derive 16
+  {
+    freemap[i] = 0x00000000;
+  }
+
+  for (int i = 0; i < lastosaddress; i++)
+  {
+    // i / 32 is which freemap entry this falls on
+    // i % 32 is which bit in the entry it falls on
+    freemap[i / 32] |= 0x1 << (i % 32); //USEABLE IF 0, IN USE IF 1
+  }
 }
 
 
@@ -70,6 +84,7 @@ void MemoryModuleInit() {
 //
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
+  //TODO
 }
 
 
@@ -170,6 +185,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
+  //TODO
   return MEM_FAIL;
 }
 
@@ -179,7 +195,19 @@ int MemoryPageFaultHandler(PCB *pcb) {
 // Feel free to edit/remove them
 //---------------------------------------------------------------------
 
+// Returns the page number allocated or -1 if full
 int MemoryAllocPage(void) {
+  //USEABLE IF 0, IN USE IF 1
+  for (int i = 0; i < 512; i++)
+  {
+    if (!(freemap[i / 32] & (0x1 << (i % 32))))
+    {
+      freemap[i / 32] |= (0x1 << (i % 32));
+      dbprintf('m', "MemoryAllocPage (%d): page %d allocated\n", GetCurrentPid(), i); 
+      return i;
+    }
+  }
+
   return -1;
 }
 

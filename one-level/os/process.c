@@ -9,6 +9,45 @@
 //	done in assembly language elsewhere.
 
 // Jason was here.
+/*
+NOTES:
+
+-dbprintf('m', "MemoryAllocPte (%d): function started\n", GetCurrentPid()); 
+-System stack is part of the PCB, accessed by physical address. User stack is accessed by virtual address.
+-PCB class is located in process.h
+-PCB class has a place to insert "size of the L1 page table"
+-When a page fault occurs, the faulting address is in register at PROCESS_STACK_FAULT index of the currentSavedFrame 
+pointer
+
+Things I have to do:
+translate virtual addresses into physical addresses upon user process accesses. Check valid bit.
+If not valid, throw a page fault exception. If valid, return the requested memory.
+
+First, OS must set up page table. When a process is created:
+-allocate several pages at page number 0 (virtual address 0x0) for code and global variables
+-allocate initial page for user stack at top of virtual address space (maximum page number)
+-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
+virtual address space)
+-allocate single page for system stack, store address in its own special register that identifies
+the system stack area
+-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
+stack page)
+-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
+saved on the system stack (careful with pointer arithmetic)
+-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
+-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
+PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
+
+When a page fault occurs from the user stack growing beyond its allocated page, the OS should automatically
+allocate a new page.
+Write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates a new
+physical page for that page number.
+BUT the current process should be killed due to a segmentation fault if it is accessing the wrong page. (if the fault 
+address is greater than or equal to the stack pointer minus 8, then it's legal!)
+
+Implement freemap, initialize it
+
+*/
 
 #include "ostraps.h"
 #include "dlxos.h"
@@ -88,6 +127,35 @@ void ProcessModuleInit () {
     //-------------------------------------------------------
     // STUDENT: Initialize the PCB's page table here.
     //-------------------------------------------------------
+    
+    //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
+    pcbs[i].pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
+    pcbs[i].pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcbs[i].pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcbs[i].pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+
+    pcbs[i].npages += 4;
+
+    //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
+
+    //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
+    //virtual address space)
+
+    //-allocate single physical page for system stack, store address in its own special register that identifies
+    //the system stack area
+    pcbs[i].sysStackArea
+
+    //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
+    //stack page)
+    pcbs[i].sysStackPtr
+
+    //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
+    //saved on the system stack (careful with pointer arithmetic)
+
+    //-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
+    
+    //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
+    //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
 
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
