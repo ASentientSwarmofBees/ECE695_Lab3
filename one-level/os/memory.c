@@ -89,7 +89,7 @@ void MemoryModuleInit() {
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 page = addr >> 12; /* 4KB pages */
   uint32 offset = addr & MEM_ADDRESS_OFFSET_MASK;
-  uint32 pte;
+  uint32 pte, physpage, physaddr;
 
   /* basic bounds check */
   if (page >= 512) { /* TODO: derive 512 from constants */
@@ -105,8 +105,8 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   }
 
   /* physical page number is stored in the high bits of the PTE (we store page<<12) */
-  uint32 physpage = pte >> 12;
-  uint32 physaddr = (physpage << 12) | offset;
+  physpage = pte >> 12;
+  physaddr = (physpage << 12) | offset;
   return physaddr;
 }
 
