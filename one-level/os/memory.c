@@ -199,7 +199,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
            GetCurrentPid(), fault_vaddr, user_sp);
 
   /* basic bounds check for pagetable index */
-  if (fault_page >= PROCESS_MAX_PAGES) {
+  if (fault_page >= 512) { //Todo: derive
     dbprintf('m', "MemoryPageFaultHandler (%d): fault_page %d out of range\n", GetCurrentPid(), fault_page);
     ProcessKill();
     return MEM_FAIL;
