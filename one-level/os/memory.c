@@ -194,6 +194,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
   /* compute page numbers (4KB pages -> shift 12) */
   uint32 fault_page = fault_vaddr >> 12;
   uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
+  int newpage;
 
   dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
            GetCurrentPid(), fault_vaddr, user_sp);
@@ -211,7 +212,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
       dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d already valid\n", GetCurrentPid(), fault_page);
       return MEM_FAIL;
     }
-    int newpage = MemoryAllocPage();
+    newpage = MemoryAllocPage();
     if (newpage < 0) {
       dbprintf('m', "MemoryPageFaultHandler (%d): out of physical pages\n", GetCurrentPid());
       ProcessKill();
