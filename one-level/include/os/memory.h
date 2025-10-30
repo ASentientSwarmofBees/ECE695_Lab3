@@ -20,6 +20,7 @@ int MemoryCopySystemToUser (PCB *pcb, unsigned char *from, unsigned char *to, in
 int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from, unsigned char *to, int n);
 int MemoryPageFaultHandler(PCB *pcb);
 int MemoryAllocPage();
+void MemoryFreePage();
 
 //---------------------------------------------------------
 // Put your function prototypes here
