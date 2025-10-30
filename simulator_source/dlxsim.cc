@@ -2457,9 +2457,10 @@ Cpu::Printf ()
       }
       // Get the current argument off the stack
       args[nargs] = GetParam(nargs+1);
-      //TODO: uncomment this cuz i commented it out
-      //DBPRINTF ('p', "Argument %d at 0x%x is %d (0x%x).\n", nargs,
+      /* TODO: uncomment this. i commented it out.
+      DBPRINTF ('p', "Argument %d at 0x%x is %d (0x%x).\n", nargs,
 		args[nargs], args[nargs]);
+    */
       while (1) {
 	c++;
 	if (*c == 's') {
