@@ -191,13 +191,12 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 int MemoryPageFaultHandler(PCB *pcb) {
   uint32 fault_vaddr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
   uint32 user_sp    = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
-
-  dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
-           GetCurrentPid(), fault_vaddr, user_sp);
-
   /* compute page numbers (4KB pages -> shift 12) */
   uint32 fault_page = fault_vaddr >> 12;
   uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
+
+  dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
+           GetCurrentPid(), fault_vaddr, user_sp);
 
   /* basic bounds check for pagetable index */
   if (fault_page >= PROCESS_MAX_PAGES) {
