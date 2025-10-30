@@ -202,9 +202,9 @@ int MemoryPageFaultHandler(PCB *pcb) {
   //user stack pointer
   //pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
 
-  if(pcb->sysStackPtr >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
+  if(*(pcb->sysStackPtr) >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
   {
-    dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), *pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
     //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
     //a new physical page for that page number.
     //int pageNumber = pcb->sysStackPtr >> 12;
