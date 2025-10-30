@@ -62,7 +62,7 @@ int MemoryGetSize() {
 void MemoryModuleInit() {
   int i;
   int lastPage = lastosaddress / 4096;
-  dbprintf('m', "MemoryModuleInit (%d): marking pages in use in freemap through address %x, page %d\n", GetCurrentPid(), lastosaddress, lastPage); 
+  dbprintf('j', "MemoryModuleInit (%d): marking pages in use in freemap through address %x, page %d\n", GetCurrentPid(), lastosaddress, lastPage); 
   
   for (i = 0; i < 16; i++) //TODO: derive 16
   {
@@ -208,7 +208,7 @@ int MemoryAllocPage(void) {
     if (!(freemap[i / 32] & (0x1 << (i % 32))))
     {
       freemap[i / 32] |= (0x1 << (i % 32));
-      dbprintf('m', "MemoryAllocPage (%d): page %d allocated\n", GetCurrentPid(), i); 
+      dbprintf('j', "MemoryAllocPage (%d): page %d allocated\n", GetCurrentPid(), i); 
       return i;
     }
   }
