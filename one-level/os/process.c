@@ -147,12 +147,12 @@ void ProcessModuleInit () {
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
-    pcbs[i].sysStackArea = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcbs[i].sysStackArea = MemoryAllocPage() << 12;
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: System Stack is 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackArea);
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
-    pcbs[i].sysStackPtr = pcbs[i].sysStackArea | 0xF00;
+    pcbs[i].sysStackPtr = (uint32 *)(pcbs[i].sysStackArea + MEM_PAGESIZE - 4);
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set sysStackPtr to 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackPtr);
 
     //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
@@ -164,7 +164,7 @@ void ProcessModuleInit () {
     pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set currentSavedFrame to sysStackPtr (0x%x).\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame);
 
-    dbprintf('z', "current saved frame points to %x, with value %x\n", pcbs[i].currentSavedFrame, *(pcbs[i].currentSavedFrame));
+    dbprintf('z', "current saved frame points to %x, with value %x\n", pcbs[i].currentSavedFrame, *pcbs[i].currentSavedFrame);
     
     //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
