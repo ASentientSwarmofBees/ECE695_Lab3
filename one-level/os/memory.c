@@ -189,42 +189,42 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
-  //the page fault handler can simply 
-  //compare the address that caused the page fault with the user stack pointer. If the fault address is greater than 
-  //or equal to the stack pointer minus 8, then it was the user stack that caused the fault and a new page should be 
-  //allocated. Hint: since the page fault handler is only given the fault address with offset zero-ed out, you should
-  //instead compare the page numbers of the two addresses just discussed. The current process should be killed due to
-  //a segmentation fault if it is accessing the wrong page. 
+  uint32 fault_vaddr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
+  uint32 user_sp    = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
 
-  //the address that caused the page fault
-  //pcb->currentSavedFrame[PROCESS_STACK_FAULT]
+  dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
+           GetCurrentPid(), fault_vaddr, user_sp);
 
-  //user stack pointer
-  //pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
+  /* compute page numbers (4KB pages -> shift 12) */
+  uint32 fault_page = fault_vaddr >> 12;
+  uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
 
-  if(pcb->currentSavedFrame[PROCESS_STACK_FAULT] >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
-  {
-    dbprintf('m', "MemoryPageFaultHandler (%d): fault address = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT], pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
-    //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
-    //a new physical page for that page number.
-    //int pageNumber = pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12;
-    dbprintf('m', "MemoryPageFaultHandler (%d): Checking PTE %d", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
-    if (pcb->pagetable[pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12] & MEM_PTE_VALID)
-    {
-      dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d is already in use?", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
+  /* basic bounds check for pagetable index */
+  if (fault_page >= PROCESS_MAX_PAGES) {
+    dbprintf('m', "MemoryPageFaultHandler (%d): fault_page %d out of range\n", GetCurrentPid(), fault_page);
+    ProcessKill();
+    return MEM_FAIL;
+  }
+
+  if (fault_page >= sp_page) {
+    dbprintf('m', "MemoryPageFaultHandler (%d): growing stack, alloc page %d\n", GetCurrentPid(), fault_page);
+    if (pcb->pagetable[fault_page] & MEM_PTE_VALID) {
+      dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d already valid\n", GetCurrentPid(), fault_page);
       return MEM_FAIL;
     }
-    else 
-    {
-      dbprintf('m', "MemoryPageFaultHandler (%d): Allocating PTE %d", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
-      pcb->pagetable[pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-      pcb->npages++;
-      return MEM_SUCCESS;
+    int newpage = MemoryAllocPage();
+    if (newpage < 0) {
+      dbprintf('m', "MemoryPageFaultHandler (%d): out of physical pages\n", GetCurrentPid());
+      ProcessKill();
+      return MEM_FAIL;
     }
-  }
-  else
-  {
-    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (fault address = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT], pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    pcb->pagetable[fault_page] = (newpage << 12) | MEM_PTE_VALID;
+    pcb->npages++;
+    dbprintf('m', "MemoryPageFaultHandler (%d): allocated phys page %d -> PTE %d\n", GetCurrentPid(), newpage, fault_page);
+    return MEM_SUCCESS;
+  } else {
+    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. fault_vaddr=0x%x user_sp=0x%x\n",
+             GetCurrentPid(), fault_vaddr, user_sp);
     ProcessKill();
     return MEM_FAIL;
   }
