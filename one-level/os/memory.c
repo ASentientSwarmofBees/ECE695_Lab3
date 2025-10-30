@@ -224,3 +224,13 @@ uint32 MemorySetupPte (uint32 page) {
 void MemoryFreePage(uint32 page) {
 }
 
+//TODO implement
+void *malloc(int memsize) {
+
+}
+
+//TODO iimplement
+int mfree(void *ptr) {
+  return -1;
+}
+
