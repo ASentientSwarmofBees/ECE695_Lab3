@@ -166,7 +166,7 @@ void ProcessModuleInit () {
 
     for (j = 0; j < 1000; j++)
     {
-      dbprintf('z', "currentSavedFrame[%d] = 0x%x\n", j, pcbs[j].currentSavedFrame[j])
+      dbprintf('z', "currentSavedFrame[%d] = 0x%x\n", j, *(pcbs[i].currentSavedFrame + j))
     }
     
     //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
