@@ -163,6 +163,12 @@ void ProcessModuleInit () {
     //-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
     pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set currentSavedFrame to sysStackPtr (0x%x).\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame);
+
+    int j = 0;
+    for (j = 0; j < 1000; j++)
+    {
+      dbprintf('z', "currentSavedFrame[%d] = 0x%x\n", j, pcbs[j].currentSavedFrame[j])
+    }
     
     //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)

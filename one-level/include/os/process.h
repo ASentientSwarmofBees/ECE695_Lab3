@@ -51,28 +51,28 @@ extern PCB	*currentPCB;
 
 // Offsets of various registers from the stack pointer in the register
 // save frame.  Offsets are in WORDS (4 byte chunks)
-#define	PROCESS_STACK_IREG	10	// Offset of r0 (grows upwards)
+#define	PROCESS_STACK_IREG	10	// Offset of r0 (grows upwards) (=10=r0)
 // NOTE: r0 isn't actually stored!  This is for convenience - r1 is the
 // first stored register, and is at location PROCESS_STACK_IREG+1
-#define	PROCESS_STACK_FREG	(PROCESS_STACK_IREG+32)	// Offset of f0
-#define	PROCESS_STACK_IAR	(PROCESS_STACK_FREG+32) // Offset of IAR
-#define	PROCESS_STACK_ISR	(PROCESS_STACK_IAR+1)
-#define	PROCESS_STACK_CAUSE	(PROCESS_STACK_IAR+2)
-#define	PROCESS_STACK_FAULT	(PROCESS_STACK_IAR+3)
+#define	PROCESS_STACK_FREG	(PROCESS_STACK_IREG+32)	// Offset of f0 (=42=r32)
+#define	PROCESS_STACK_IAR	(PROCESS_STACK_FREG+32) // Offset of IAR (=74=r64)
+#define	PROCESS_STACK_ISR	(PROCESS_STACK_IAR+1) //(=75=r65)
+#define	PROCESS_STACK_CAUSE	(PROCESS_STACK_IAR+2) //(=76=r66)
+#define	PROCESS_STACK_FAULT	(PROCESS_STACK_IAR+3) //(=77=r67)
 //base address of the level 1 page table
-#define	PROCESS_STACK_PTBASE	(PROCESS_STACK_IAR+4)
+#define	PROCESS_STACK_PTBASE	(PROCESS_STACK_IAR+4) //(=78=r68)
 //maximum number of entries in the level 1 page table
-#define	PROCESS_STACK_PTSIZE	(PROCESS_STACK_IAR+5)
+#define	PROCESS_STACK_PTSIZE	(PROCESS_STACK_IAR+5) //(=79=r69)
 //this register contains two different pieces of information, one in the upper 16 bits, and one in the lower 16 
 //bits. The number in the lower 16 bits indicates the bit position of the least significant bit of the level 1 
 //page number field in a virtual address. The number in the upper 16 bits indicates the bit position of the least 
 //significant bit of the level 2 page table field in a virtual address. As a special case, if the two numbers are 
 //the same, then the hardware assumes that there are no level 2 page tables and uses only one-level address 
 //translation. In this lab, we will not deal with level 2 page tables
-#define	PROCESS_STACK_PTBITS	(PROCESS_STACK_IAR+6)
+#define	PROCESS_STACK_PTBITS	(PROCESS_STACK_IAR+6) //(=80=r70)
 //this is the initial stack pointer for the user process. This should be set to the highest 4-byte-aligned 
 //address in the virtual memory space.
-#define PROCESS_STACK_USER_STACKPOINTER  (PROCESS_STACK_IREG + 29) // r29 is user stack pointer
+#define PROCESS_STACK_USER_STACKPOINTER  (PROCESS_STACK_IREG + 29) // r29 is user stack pointer (=39=r29)
 #define	PROCESS_STACK_PREV_FRAME 10	// points to previous interrupt frame
 #define	PROCESS_STACK_FRAME_SIZE 85	// interrupt frame is 85 words
 #define PROCESS_MAX_NAME_LENGTH  100    // Maximum length of an executable's filename
