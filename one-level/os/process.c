@@ -129,32 +129,36 @@ void ProcessModuleInit () {
     //-------------------------------------------------------
     
     //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
-    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
+    dbprintf('q', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
     pcbs[i].pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
-    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
+    dbprintf('q', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
     pcbs[i].pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
+    dbprintf('q', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
     pcbs[i].pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
+    dbprintf('q', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
     pcbs[i].pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
+    dbprintf('q', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
 
     pcbs[i].npages += 4;
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
     pcbs[i].pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: User stack is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[512-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
     pcbs[i].sysStackArea = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: System Stack is 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackArea);
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
     pcbs[i].sysStackPtr = pcbs[i].sysStackArea | 0xF00;
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set sysStackPtr to 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackPtr);
 
     //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
     //saved on the system stack (careful with pointer arithmetic)
     pcbs[i].sysStackPtr -= PROCESS_STACK_FRAME_SIZE;
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Decremented sysStackPtr to 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackPtr);
 
     //-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
     pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
@@ -162,11 +166,16 @@ void ProcessModuleInit () {
     //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
     pcbs[i].currentSavedFrame[PROCESS_STACK_PTBASE] = pcbs[i].pagetable[0] & 0x000;
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_PTBASE]);
     pcbs[i].currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_PTSIZE]);
     pcbs[i].currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_PTBITS]);
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
     pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xF00; //TODO should be derived
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    
 
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
