@@ -115,7 +115,7 @@ void ProcessModuleInit () {
   AQueueInit (&zombieQueue);
   // For each PCB slot in the global pcbs array:
   for (i = 0; i < PROCESS_MAX_PROCS; i++) {
-    dbprintf ('j', "ProcessModuleInit: Initializing PCB %d @ 0x%x.\n", i, (int)&(pcbs[i]));
+    dbprintf('z', "ProcessModuleInit: Initializing PCB %d @ 0x%x.\n", i, (int)&(pcbs[i]));
     // First, set the internal PCB link pointer to a newly allocated link
     if ((pcbs[i].l = AQueueAllocLink(&pcbs[i])) == NULL) {
       printf("FATAL ERROR: could not allocate link in ProcessModuleInit!\n");
@@ -129,15 +129,15 @@ void ProcessModuleInit () {
     //-------------------------------------------------------
     
     //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
-    dbprintf ('j', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
     pcbs[i].pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
-    dbprintf ('j', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
     pcbs[i].pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf ('j', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
     pcbs[i].pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf ('j', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
     pcbs[i].pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf ('j', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
+    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
 
     pcbs[i].npages += 4;
 
