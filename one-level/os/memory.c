@@ -224,7 +224,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
   }
   else
   {
-    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (sysStackPtr = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (sysStackPtr = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), *pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
     ProcessKill();
     return MEM_FAIL;
   }
