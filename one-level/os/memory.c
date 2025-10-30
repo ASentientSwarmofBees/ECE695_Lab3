@@ -189,7 +189,24 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
-  //TODO
+  //the page fault handler can simply 
+  //compare the address that caused the page fault with the user stack pointer. If the fault address is greater than 
+  //or equal to the stack pointer minus 8, then it was the user stack that caused the fault and a new page should be 
+  //allocated. Hint: since the page fault handler is only given the fault address with offset zero-ed out, you should
+  //instead compare the page numbers of the two addresses just discussed. The current process should be killed due to
+  //a segmentation fault if it is accessing the wrong page. 
+
+  dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackptr, pcb->pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+
+  //the address that caused the page fault
+  //pcb->sysStackPtr
+
+  //user stack pointer
+  //pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
+
+  //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
+  //a new physical page for that page number.
+
   return MEM_FAIL;
 }
 
