@@ -197,34 +197,34 @@ int MemoryPageFaultHandler(PCB *pcb) {
   //a segmentation fault if it is accessing the wrong page. 
 
   //the address that caused the page fault
-  //pcb->sysStackPtr
+  //pcb->currentSavedFrame[PROCESS_STACK_FAULT]
 
   //user stack pointer
   //pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
 
-  if(*pcb->sysStackPtr >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
+  if(pcb->currentSavedFrame[PROCESS_STACK_FAULT] >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
   {
-    dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), *pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    dbprintf('m', "MemoryPageFaultHandler (%d): fault address = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT], pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
     //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
     //a new physical page for that page number.
-    //int pageNumber = pcb->sysStackPtr >> 12;
-    dbprintf('m', "MemoryPageFaultHandler (%d): Checking PTE %d", GetCurrentPid(), *pcb->sysStackPtr >> 12);
-    if (pcb->pagetable[*pcb->sysStackPtr >> 12] & MEM_PTE_VALID)
+    //int pageNumber = pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12;
+    dbprintf('m', "MemoryPageFaultHandler (%d): Checking PTE %d", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
+    if (pcb->pagetable[pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12] & MEM_PTE_VALID)
     {
-      dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d is already in use?", GetCurrentPid(), *pcb->sysStackPtr >> 12);
+      dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d is already in use?", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
       return MEM_FAIL;
     }
     else 
     {
-      dbprintf('m', "MemoryPageFaultHandler (%d): Allocating PTE %d", GetCurrentPid(), *pcb->sysStackPtr >> 12);
-      pcb->pagetable[*pcb->sysStackPtr >> 12] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+      dbprintf('m', "MemoryPageFaultHandler (%d): Allocating PTE %d", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12);
+      pcb->pagetable[pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> 12] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
       pcb->npages++;
       return MEM_SUCCESS;
     }
   }
   else
   {
-    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (sysStackPtr = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), *pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (fault address = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_FAULT], pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
     ProcessKill();
     return MEM_FAIL;
   }
