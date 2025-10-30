@@ -196,18 +196,38 @@ int MemoryPageFaultHandler(PCB *pcb) {
   //instead compare the page numbers of the two addresses just discussed. The current process should be killed due to
   //a segmentation fault if it is accessing the wrong page. 
 
-  dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
-
   //the address that caused the page fault
   //pcb->sysStackPtr
 
   //user stack pointer
   //pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
 
-  //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
-  //a new physical page for that page number.
-
-  return MEM_FAIL;
+  if(pcb->sysStackPtr >= pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] - 8)
+  {
+    dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    //write a page fault handler which reads the faulting virtual address, figures out its page number, and allocates 
+    //a new physical page for that page number.
+    int pageNumber = pcb->sysStackPtr >> 12;
+    dbprintf('m', "MemoryPageFaultHandler (%d): Checking PTE %d", GetCurrentPid(), pcb->sysStackPtr >> 12);
+    if (pcb->pagetable[pcb->sysStaackPtr >> 12] & MEM_PTE_VALID)
+    {
+      dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d is already in use?", GetCurrentPid(), pcb->sysStackPtr >> 12);
+      return MEM_FAIL;
+    }
+    else 
+    {
+      dbprintf('m', "MemoryPageFaultHandler (%d): Allocating PTE %d", GetCurrentPid(), pcb->sysStackPtr >> 12);
+      pcb->pagetable[pcb->sysStackPtr >> 12] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+      pcb->npages++;
+      return MEM_SUCCESS;
+    }
+  }
+  else
+  {
+    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. (sysStackPtr = 0x%x, user stack ptr = 0x%x.)\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    ProcessKill();
+    return MEM_FAIL;
+  }
 }
 
 
