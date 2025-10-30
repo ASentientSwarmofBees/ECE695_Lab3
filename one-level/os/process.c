@@ -106,7 +106,7 @@ uint32 get_argument(char *string);
 //
 //----------------------------------------------------------------------
 void ProcessModuleInit () {
-  int		i;
+  int		i, j;
 
   dbprintf ('p', "Entering ProcessModuleInit\n");
   AQueueInit (&freepcbs);
@@ -164,7 +164,6 @@ void ProcessModuleInit () {
     pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set currentSavedFrame to sysStackPtr (0x%x).\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame);
 
-    int j = 0;
     for (j = 0; j < 1000; j++)
     {
       dbprintf('z', "currentSavedFrame[%d] = 0x%x\n", j, pcbs[j].currentSavedFrame[j])
