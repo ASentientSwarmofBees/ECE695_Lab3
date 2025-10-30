@@ -209,7 +209,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
     //a new physical page for that page number.
     //int pageNumber = pcb->sysStackPtr >> 12;
     dbprintf('m', "MemoryPageFaultHandler (%d): Checking PTE %d", GetCurrentPid(), *pcb->sysStackPtr >> 12);
-    if (pcb->pagetable[pcb->sysStaackPtr >> 12] & MEM_PTE_VALID)
+    if (pcb->pagetable[*pcb->sysStackPtr >> 12] & MEM_PTE_VALID)
     {
       dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d is already in use?", GetCurrentPid(), *pcb->sysStackPtr >> 12);
       return MEM_FAIL;
