@@ -61,7 +61,7 @@ int MemoryGetSize() {
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
   int i;
-  dbprintf('m', "MemoryModuleInit (%d): marking pages in use in freemap through page %d\n", GetCurrentPid(), lastosaddress); 
+  dbprintf('m', "MemoryModuleInit (%d): marking pages in use in freemap through address %x\n", GetCurrentPid(), lastosaddress); 
   
   for (i = 0; i < 16; i++) //TODO: derive 16
   {
