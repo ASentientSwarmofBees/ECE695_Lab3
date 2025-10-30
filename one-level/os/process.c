@@ -184,17 +184,17 @@ void ProcessFreeResources (PCB *pcb) {
   // STUDENT: Free any memory resources on process death here.
   //------------------------------------------------------------
 
-  MemoryFreePage(pcb.sysStackArea);
-  pcb.npages--;
+  MemoryFreePage(pcb->sysStackArea);
+  pcb->npages--;
   for (i = 0; i < 512; i++) //TODO derive
   {
-    if(pcb.pagetable[i] & MEM_PTE_VALID)
+    if(pcb->pagetable[i] & MEM_PTE_VALID)
     {
-      MemoryFreePage(pcb.pagetable[i] >> 12);
-      pcb.npages--;
+      MemoryFreePage(pcb->pagetable[i] >> 12);
+      pcb->npages--;
     }
   }
-  if(pcb.npages > 0)
+  if(pcb->npages > 0)
   {
     dbprintf('m', "ProcessFreeResources (%d): PCB npages > 0", GetCurrentPid());
   }
@@ -479,37 +479,37 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
    //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
     dbprintf('p', "ProcessFork (%d): Allocating 4 virtual pages.\n", GetCurrentPid(), i);
-    pcb.pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
-    dbprintf('p', "ProcessFork (%d): Page 0 is 0x%x.\n", GetCurrentPid(), pcb.pagetable[0]);
-    pcb.pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('p', "ProcessFork (%d): Page 1 is 0x%x.\n", GetCurrentPid(), pcb.pagetable[1]);
-    pcb.pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('p', "ProcessFork (%d): Page 2 is 0x%x.\n", GetCurrentPid(), pcb.pagetable[2]);
-    pcb.pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb.pagetable[3]);
+    pcb->pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
+    dbprintf('p', "ProcessFork (%d): Page 0 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[0]);
+    pcb->pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    dbprintf('p', "ProcessFork (%d): Page 1 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[1]);
+    pcb->pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    dbprintf('p', "ProcessFork (%d): Page 2 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[2]);
+    pcb->pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[3]);
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcb.pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
-    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb.pagetable[512-1]);
+    pcb->pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
+    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[512-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
-    pcb.sysStackArea = MemoryAllocPage() << 12;
-    dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb.sysStackArea);
+    pcb->sysStackArea = MemoryAllocPage() << 12;
+    dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb->sysStackArea);
 
-    pcb.npages += 6;
+    pcb->npages += 6;
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
-    pcb.sysStackPtr = pcb.sysStackArea + 0xFFC;
-    dbprintf('p', "ProcessFork (%d): Set sysStackPtr to 0x%x.\n", GetCurrentPid(), pcb.sysStackPtr);
+    pcb->sysStackPtr = pcb->sysStackArea + 0xFFC;
+    dbprintf('p', "ProcessFork (%d): Set sysStackPtr to 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr);
 
   //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
   //saved on the system stack (careful with pointer arithmetic)
     //pcb.sysStackPtr -= PROCESS_STACK_FRAME_SIZE;
     //dbprintf('p', "ProcessFork (%d): Decremented sysStackPtr to 0x%x.\n", GetCurrentPid(), pcb.sysStackPtr);
   //This is done later with StackFrame now
-  stackframe = pcb.sysStackPtr;
+  stackframe = pcb->sysStackPtr;
 
   //-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
     //pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
@@ -548,12 +548,12 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
     dbprintf('p', "ProcessFork (%d): Attempting to access currentSavedFrame[%d].\n", GetCurrentPid(), PROCESS_STACK_PTBASE);
-    pcb.currentSavedFrame[PROCESS_STACK_PTBASE] = pcbs[i].pagetable[0] & 0xFFFFF000;
-    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), pcb.currentSavedFrame[PROCESS_STACK_PTBASE]);
-    pcb.currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
-    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), pcb.currentSavedFrame[PROCESS_STACK_PTSIZE]);
-    pcb.currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
-    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), pcb.currentSavedFrame[PROCESS_STACK_PTBITS]);
+    pcb->currentSavedFrame[PROCESS_STACK_PTBASE] = pcb->pagetable[0] & 0xFFFFF000;
+    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBASE]);
+    pcbvcurrentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
+    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTSIZE]);
+    pcb->currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
+    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBITS]);
     
   if (isUser) {
     dbprintf ('p', "About to load %s\n", name);
@@ -586,8 +586,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
-    pcb.currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xFFC; //TODO should be derived
-    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), pcb.currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+    pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xFFC; //TODO should be derived
+    dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
 
     //--------------------------------------------------------------------
     // This part is setting up the initial user stack with argc and argv.
