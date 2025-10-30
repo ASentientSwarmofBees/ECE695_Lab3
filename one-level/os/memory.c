@@ -91,20 +91,20 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 offset = addr & MEM_ADDRESS_OFFSET_MASK;
   uint32 pte, physpage, physaddr;
 
-  //basic bounds check
-  if (page >= 512) { //TODO: derive 512 from constants
+  /* basic bounds check */
+  if (page >= 512) { /* TODO: derive 512 from constants */
     dbprintf('m', "MemoryTranslateUserToSystem: page %d out of range\n", page);
     return 0;
   }
 
   pte = pcb->pagetable[page];
   if (!(pte & MEM_PTE_VALID)) {
-    //not mapped
+    /* not mapped */
     dbprintf('m', "MemoryTranslateUserToSystem: vpage %d not mapped (pte=0x%x)\n", page, pte);
     return 0;
   }
 
-  // physical page number is stored in the high bits of the PTE (we store page<<12)
+  /* physical page number is stored in the high bits of the PTE (we store page<<12) */
   physpage = pte >> 12;
   physaddr = (physpage << 12) | offset;
   return physaddr;
