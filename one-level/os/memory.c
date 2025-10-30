@@ -213,7 +213,6 @@ int MemoryPageFaultHandler(PCB *pcb) {
   /* compute page numbers (4KB pages -> shift 12) */
   uint32 fault_page = fault_vaddr >> 12;
   uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
-  uint32 pte;
   int newpage;
 
   dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
@@ -225,12 +224,6 @@ int MemoryPageFaultHandler(PCB *pcb) {
     ProcessKill();
     return MEM_FAIL;
   }
-
-  pte = pcb->pagetable[fault_page];
-  dbprintf('m', "  pagetable[%d]=0x%x (valid? %s, physpage=0x%x)\n",
-             fault_page, pte,
-             (pte & MEM_PTE_VALID) ? "yes" : "no",
-             (pte >> 12));
 
   if (fault_page >= sp_page) {
     dbprintf('m', "MemoryPageFaultHandler (%d): growing stack, alloc page %d\n", GetCurrentPid(), fault_page);
