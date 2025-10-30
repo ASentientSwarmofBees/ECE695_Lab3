@@ -216,13 +216,22 @@ int MemoryAllocPage(void) {
   return -1;
 }
 
-
 uint32 MemorySetupPte (uint32 page) {
   return -1;
 }
 
-
 void MemoryFreePage(uint32 page) {
+  uint32 mask = (0x1 << (page % 32)) ^ 0xFFFFFFFF;
+
+  if (freemap[page / 32] & mask)
+  {
+    dbprintf('m', "MemoryFreePage (%d): Freeing page %d.\n", GetCurrentPid(), page);
+    freemap[page / 32] ^= mask;
+  }
+  else
+  {
+    dbprintf('m', "MemoryFreePage (%d): Tried to free page %d, which is not in use.\n", GetCurrentPid(), page);
+  }
 }
 
 //TODO implement
