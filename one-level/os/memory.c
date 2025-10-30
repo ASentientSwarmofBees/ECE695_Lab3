@@ -196,7 +196,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
   //instead compare the page numbers of the two addresses just discussed. The current process should be killed due to
   //a segmentation fault if it is accessing the wrong page. 
 
-  dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackptr, pcb->pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
+  dbprintf('m', "MemoryPageFaultHandler (%d): sysStackPtr = 0x%x, user stack ptr = 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr, pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
 
   //the address that caused the page fault
   //pcb->sysStackPtr
