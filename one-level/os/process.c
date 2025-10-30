@@ -152,7 +152,7 @@ void ProcessModuleInit () {
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
-    pcbs[i].sysStackPtr = (uint32 *)(pcbs[i].sysStackArea + MEM_PAGESIZE - 4);
+    pcbs[i].sysStackPtr = pcbs[i].sysStackArea + 0xFFC;
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: Set sysStackPtr to 0x%x.\n", GetCurrentPid(), i, pcbs[i].sysStackPtr);
 
     //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
@@ -177,7 +177,7 @@ void ProcessModuleInit () {
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_PTBITS]);
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
-    pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xF00; //TODO should be derived
+    pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xFFC; //TODO should be derived
     dbprintf('z', "ProcessModuleInit (%d), PCB %d: set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), i, pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
     
 
