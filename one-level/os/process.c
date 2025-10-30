@@ -571,7 +571,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 	      dataL);
 
     while ((n = ProcessGetFromFile (fd, buf, &addr, sizeof (buf))) > 0) {
-      dbprintf ('p', "Placing %d bytes at vaddr %08x.\n", n, addr - n);
+      //TODO: uncomment this dbprintf line?
+      //dbprintf ('p', "Placing %d bytes at vaddr %08x.\n", n, addr - n);
       // Copy the data to user memory.  Note that the user memory needs to
       // have enough space so that this copy will succeed!
       MemoryCopySystemToUser (pcb, buf, (char *)(addr - n), n);
@@ -903,7 +904,8 @@ void main (int argc, char *argv[])
   printf ("Available memory: 0x%x -> 0x%x.\n", (int)lastosaddress, MemoryGetSize ());
   printf ("Argument count is %d.\n", argc);
   for (i = 0; i < argc; i++) {
-    printf ("Argument %d is %s.\n", i, argv[i]);
+    //TODO: Uncomment?
+    //printf ("Argument %d is %s.\n", i, argv[i]);
   }
 
   FsModuleInit ();
