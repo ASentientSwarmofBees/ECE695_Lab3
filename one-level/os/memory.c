@@ -107,6 +107,9 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   /* physical page number is stored in the high bits of the PTE (we store page<<12) */
   physpage = pte >> 12;
   physaddr = (physpage << 12) | offset;
+
+  dbprintf('m', "MemoryTranslateUserToSystem: vpage %d valid (pte=0x%x), returning physaddr 0x%x.\n", page, pte, physaddr);
+
   return physaddr;
 }
 
