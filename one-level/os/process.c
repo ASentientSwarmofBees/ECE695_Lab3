@@ -129,23 +129,20 @@ void ProcessModuleInit () {
     //-------------------------------------------------------
     
     //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
-    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
+    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Allocating 4 virtual pages.\n", GetCurrentPid(), i);
     pcbs[i].pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
-    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
+    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 0 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[0]);
     pcbs[i].pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
+    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 1 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[1]);
     pcbs[i].pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
+    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 2 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[2]);
     pcbs[i].pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
-    dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
+    //dbprintf('z', "ProcessModuleInit (%d), PCB %d: Page 3 is 0x%x.\n", GetCurrentPid(), i, pcbs[i].pagetable[3]);
 
     pcbs[i].npages += 4;
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
     pcbs[i].pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
-
-    //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
-    //virtual address space)
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
@@ -164,8 +161,12 @@ void ProcessModuleInit () {
     
     //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
-    
-    //pcbs[i].currentSavedFrame[] = 
+    pcbs[i].currentSavedFrame[PROCESS_STACK_PTBASE] = pcbs[i].pagetable[0] & 0x000;
+    pcbs[i].currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
+    pcbs[i].currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
+    //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
+    //virtual address space)
+    pcbs[i].currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xF00; //TODO should be derived
 
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
