@@ -142,7 +142,7 @@ void ProcessModuleInit () {
     pcbs[i].npages += 4;
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcbs[i].pagetable[] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcbs[i].pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
 
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
