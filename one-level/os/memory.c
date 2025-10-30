@@ -108,7 +108,7 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   physpage = pte >> 12;
   physaddr = (physpage << 12) | offset;
 
-  dbprintf('m', "MemoryTranslateUserToSystem: vpage %d valid (pte=0x%x), returning physaddr 0x%x.\n", page, pte, physaddr);
+  dbprintf('m', "MemoryTranslateUserToSystem: addr 0x%x, vpage %d valid (pte=0x%x), returning physaddr 0x%x.\n", addr, page, pte, physaddr);
 
   return physaddr;
 }
