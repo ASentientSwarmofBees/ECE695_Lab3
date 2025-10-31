@@ -138,11 +138,14 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   int		bytesCopied = 0;  // Running counter
   int		bytesToCopy;      // Used to compute number of bytes left in page to be copied
 
+  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
+    
   while (n > 0) {
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): System: 0x%x, User: 0x%x, N: %d, bytesCopied: %d, bytesToCopy: %d\n", GetCurrentPid(), system, user, n, bytesCopied, bytesToCopy);
     // Translate current user page to system address.  If this fails, return
     // the number of bytes copied so far.
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
+
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
 
     // If we could not translate address, exit now
     if (curUser == (unsigned char *)0) break;
