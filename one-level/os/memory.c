@@ -88,23 +88,14 @@ void MemoryModuleInit() {
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 page, offset, pte, physpage, physaddr;
-
-  
-  dbprintf('m', "MTUTS error test -2\n");
   page = addr >> 12; /* 4KB pages */
-  dbprintf('m', "MTUTS error test -1\n");
   offset = addr & MEM_ADDRESS_OFFSET_MASK;
-  dbprintf('m', "MTUTS error test 0\n");
-
-  dbprintf('m', "MTUTS error test 1\n");
 
   //basic bounds check
   if (page >= 512) { //TODO: derive 512 from constants
     dbprintf('m', "MemoryTranslateUserToSystem: page %d out of range\n", page);
     return 0;
   }
-
-  dbprintf('m', "MTUTS error test 2\n");
 
   pte = pcb->pagetable[page];
   if (!(pte & MEM_PTE_VALID)) {
@@ -113,17 +104,10 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
     return 0;
   }
 
-  dbprintf('m', "MTUTS error test 3\n");
-
   //physical page number is stored in the high bits of the PTE (we store page<<12)
   physpage = pte >> 12;
-
-  dbprintf('m', "MTUTS error test 4\n");
-
   physaddr = (physpage << 12) | offset;
-
   dbprintf('m', "MemoryTranslateUserToSystem: addr 0x%x, vpage %d valid (pte=0x%x), returning physaddr 0x%x.\n", addr, page, pte, physaddr);
-
   return physaddr;
 }
 
@@ -152,21 +136,15 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   int		bytesCopied = 0;  // Running counter
   int		bytesToCopy;      // Used to compute number of bytes left in page to be copied
 
-  //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
-  dbprintf('m', "MMBSS: System: 0x%x\n", system);
-  dbprintf('m', "MMBSS: User: 0x%x\n", user);
-  dbprintf('m', "MMBSS: N: %d\n", n);
-  
-  dbprintf('m', "MMBS error test 1\n");
+  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
 
   while (n > 0) {
     // Translate current user page to system address.  If this fails, return
     // the number of bytes copied so far.
 
-    dbprintf('m', "MMBS error test 2\n");
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
 
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
 
     // If we could not translate address, exit now
     if (curUser == (unsigned char *)0) break;
