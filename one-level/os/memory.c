@@ -87,8 +87,11 @@ void MemoryModuleInit() {
 //
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
+  dbprintf('m', "MTUTS error test -2\n");
   uint32 page = addr >> 12; /* 4KB pages */
+  dbprintf('m', "MTUTS error test -1\n");
   uint32 offset = addr & MEM_ADDRESS_OFFSET_MASK;
+  dbprintf('m', "MTUTS error test 0\n");
   uint32 pte, physpage, physaddr;
 
   dbprintf('m', "MTUTS error test 1\n");
@@ -152,6 +155,8 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   while (n > 0) {
     // Translate current user page to system address.  If this fails, return
     // the number of bytes copied so far.
+
+    dbprintf('m', "MMBS error test\n");
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
 
     dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
