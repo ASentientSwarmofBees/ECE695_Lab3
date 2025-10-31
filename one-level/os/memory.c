@@ -147,7 +147,12 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
 
     // If we could not translate address, exit now
-    if (curUser == (unsigned char *)0) break;
+    if (curUser == (unsigned char *)0) {
+      dbprintf('m', "MemoryMoveBetweenSpaces (%d): Exiting; could not translate address 0x%x.\n", GetCurrentPid(), curUser);
+      break;
+    }
+
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully translated address 0x%x\n", GetCurrentPid(), curUser);
 
     // Calculate the number of bytes to copy this time.  If we have more bytes
     // to copy than there are left in the current page, we'll have to just copy to the
@@ -161,6 +166,8 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     // MEM_ADDRESS_OFFSET_MASK should be the bit mask required to get just the
     // "offset" portion of an address.
     bytesToCopy = MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
+
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully assigned bytesToCopy to %d - 0x%x = %d\n", GetCurrentPid(), MEM_PAGE_SIZE, curUser & MEM_ADDRESS_OFFSET_MASK, bytesTocopy);
     
     // Now find minimum of bytes in this page vs. total bytes left to copy
     if (bytesToCopy > n) {
