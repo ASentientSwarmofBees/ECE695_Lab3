@@ -167,7 +167,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     // "offset" portion of an address.
     bytesToCopy = MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
 
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully assigned bytesToCopy to %d - 0x%x = %d\n", GetCurrentPid(), MEM_PAGE_SIZE, curUser & MEM_ADDRESS_OFFSET_MASK, bytesTocopy);
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully assigned bytesToCopy to %d - 0x%x = %d\n", GetCurrentPid(), MEM_PAGESIZE, curUser & MEM_ADDRESS_OFFSET_MASK, bytesTocopy);
     
     // Now find minimum of bytes in this page vs. total bytes left to copy
     if (bytesToCopy > n) {
