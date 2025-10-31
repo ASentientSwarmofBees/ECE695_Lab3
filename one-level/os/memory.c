@@ -87,12 +87,14 @@ void MemoryModuleInit() {
 //
 //----------------------------------------------------------------------
 uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
+  uint32 page, offset, pte, physpage, physaddr;
+
+  
   dbprintf('m', "MTUTS error test -2\n");
-  uint32 page = addr >> 12; /* 4KB pages */
+  page = addr >> 12; /* 4KB pages */
   dbprintf('m', "MTUTS error test -1\n");
-  uint32 offset = addr & MEM_ADDRESS_OFFSET_MASK;
+  offset = addr & MEM_ADDRESS_OFFSET_MASK;
   dbprintf('m', "MTUTS error test 0\n");
-  uint32 pte, physpage, physaddr;
 
   dbprintf('m', "MTUTS error test 1\n");
 
