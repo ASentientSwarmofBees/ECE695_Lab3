@@ -205,6 +205,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     system += bytesToCopy;      // Current address in system space to copy next bytes from/into
     user += bytesToCopy;        // Current virtual address in user space to copy next bytes from/into
   }
+  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Finished. Total bytes copied: %d\n", GetCurrentPid(), bytesCopied);
   return (bytesCopied);
 }
 
