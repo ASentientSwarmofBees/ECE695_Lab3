@@ -903,8 +903,8 @@ void main (int argc, char *argv[])
   printf ("Available memory: 0x%x -> 0x%x.\n", (int)lastosaddress, MemoryGetSize ());
   printf ("Argument count is %d.\n", argc);
   for (i = 0; i < argc; i++) {
-    //TODO: Uncomment?
-    //printf ("Argument %d is %s.\n", i, argv[i]);
+    //TODO: comment?
+    printf ("Argument %d is %s.\n", i, argv[i]);
   }
 
   FsModuleInit ();
