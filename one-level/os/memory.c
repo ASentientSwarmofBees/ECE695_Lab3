@@ -143,6 +143,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   unsigned char *curUser;         // Holds current physical address representing user-space virtual address
   int		bytesCopied = 0;  // Running counter
   int		bytesToCopy;      // Used to compute number of bytes left in page to be copied
+  int temp1, temp2;            // Temporary variables for calculations
 
   dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
 
@@ -173,13 +174,16 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     // address.  MEM_PAGESIZE should be the size (in bytes) of 1 page of memory.
     // MEM_ADDRESS_OFFSET_MASK should be the bit mask required to get just the
     // "offset" portion of an address.
-    bytesToCopy = (int)MEM_PAGESIZE - (int)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
-    dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
-    dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
-    dbprintf('y', "MEM_ADDRESS_OFFSET_MASK = 0x%x\n", MEM_ADDRESS_OFFSET_MASK);
-    dbprintf('y', "curUser & mask = 0x%x, or %d\n", ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
-    dbprintf('y', "MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK) = 0x%x, or %d\n", MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
-    dbprintf('y', "bytesToCopy = 0x%x, or %d\n", bytesToCopy, bytesToCopy);
+    temp1 = (int)MEM_PAGESIZE;
+    temp2 = (int)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
+    bytesToCopy = temp1 - temp2;
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Calculated bytes left in page as %d - 0x%x (or %d) = %d\n", GetCurrentPid(), temp1, temp2, temp2, temp1 - temp2);
+    //dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
+    //dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
+    //dbprintf('y', "MEM_ADDRESS_OFFSET_MASK = 0x%x\n", MEM_ADDRESS_OFFSET_MASK);
+    //dbprintf('y', "curUser & mask = 0x%x, or %d\n", ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
+    //dbprintf('y', "MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK) = 0x%x, or %d\n", MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
+    //dbprintf('y', "bytesToCopy = 0x%x, or %d\n", bytesToCopy, bytesToCopy);
     dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully assigned bytesToCopy to %d - 0x%x (or %d) = %d\n", GetCurrentPid(), MEM_PAGESIZE, ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), bytesToCopy);
     
     // Now find minimum of bytes in this page vs. total bytes left to copy
