@@ -97,6 +97,14 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
     return 0;
   }
 
+  //4-byte alignment check
+  if (addr & 0x3) {
+    dbprintf('m', "MemoryTranslateUserToSystem: addres 0x%x is not 4-byte aligned.\n", addr);
+    //addr = addr & 0xFFFFFFFC;
+    ProcessKill();
+    return 0;
+  }
+
   pte = pcb->pagetable[page];
   if (!(pte & MEM_PTE_VALID)) {
     //not mapped
