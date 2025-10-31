@@ -154,11 +154,13 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
 
   dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
     
+  dbprintf('m', "MMBS error test 1\n");
+
   while (n > 0) {
     // Translate current user page to system address.  If this fails, return
     // the number of bytes copied so far.
 
-    dbprintf('m', "MMBS error test\n");
+    dbprintf('m', "MMBS error test 2\n");
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
 
     dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
