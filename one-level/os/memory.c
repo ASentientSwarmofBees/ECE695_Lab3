@@ -91,11 +91,15 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   uint32 offset = addr & MEM_ADDRESS_OFFSET_MASK;
   uint32 pte, physpage, physaddr;
 
+  dbprintf('m', "MTUTS error test 1\n");
+
   //basic bounds check
   if (page >= 512) { //TODO: derive 512 from constants
     dbprintf('m', "MemoryTranslateUserToSystem: page %d out of range\n", page);
     return 0;
   }
+
+  dbprintf('m', "MTUTS error test 2\n");
 
   pte = pcb->pagetable[page];
   if (!(pte & MEM_PTE_VALID)) {
@@ -104,8 +108,13 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
     return 0;
   }
 
+  dbprintf('m', "MTUTS error test 3\n");
+
   //physical page number is stored in the high bits of the PTE (we store page<<12)
   physpage = pte >> 12;
+
+  dbprintf('m', "MTUTS error test 4\n");
+
   physaddr = (physpage << 12) | offset;
 
   dbprintf('m', "MemoryTranslateUserToSystem: addr 0x%x, vpage %d valid (pte=0x%x), returning physaddr 0x%x.\n", addr, page, pte, physaddr);
