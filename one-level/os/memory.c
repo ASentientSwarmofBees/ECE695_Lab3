@@ -152,8 +152,11 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   int		bytesCopied = 0;  // Running counter
   int		bytesToCopy;      // Used to compute number of bytes left in page to be copied
 
-  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
-    
+  //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
+  dbprintf('m', "MMBSS: System: 0x%x\n", system);
+  dbprintf('m', "MMBSS: User: 0x%x\n", user);
+  dbprintf('m', "MMBSS: N: %d\n", n);
+  
   dbprintf('m', "MMBS error test 1\n");
 
   while (n > 0) {
