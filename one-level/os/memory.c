@@ -78,7 +78,7 @@ void MemoryModuleInit() {
   {
     // i / 32 is which freemap entry this falls on
     // i % 32 is which bit in the entry it falls on
-    freemap[i / 32] |= 0x1 << (i % 32); //USEABLE IF 0, IN USE IF 1
+    freemap[i / 32] |= (0x1 << (i % 32)); //USEABLE IF 0, IN USE IF 1
   }
 }
 

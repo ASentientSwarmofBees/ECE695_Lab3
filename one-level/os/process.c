@@ -586,7 +586,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
-    pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = 511 << 12 | 0xFFC; //TODO should be derived
+    pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = (511 << 12) | 0xFFC; //TODO should be derived
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
 
     //--------------------------------------------------------------------
