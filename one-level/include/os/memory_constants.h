@@ -42,7 +42,7 @@
 //If this bit is set to 1, then the PTE is considered to contain a valid physical page address.
 #define MEM_PTE_VALID 0x1
 
-#define MEM_PAGESIZE 0x1 << MEM_L1FIELD_FIRST_BITNUM
+#define MEM_PAGESIZE 4096
 //should be the bit mask required to get just the
     // "offset" portion of an address.
 #define MEM_ADDRESS_OFFSET_MASK 0xFFF
