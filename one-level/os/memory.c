@@ -270,6 +270,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
 
   if (pcb->pagetable[fault_page] & MEM_PTE_VALID) {
       dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d already valid\n", GetCurrentPid(), fault_page);
+      ProcessKill();
       return MEM_FAIL;
   }
 
@@ -287,7 +288,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
       ProcessKill();
       return MEM_FAIL;
     }
-    
+
     pcb->pagetable[fault_page] = (newpage << 12) | MEM_PTE_VALID;
     pcb->npages++;
     dbprintf('m', "MemoryPageFaultHandler (%d): allocated phys page %d -> PTE %d\n", GetCurrentPid(), newpage, fault_page);
