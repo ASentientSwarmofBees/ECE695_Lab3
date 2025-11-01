@@ -1,0 +1,563 @@
+[33mcommit e963fa153ff3fe2b99ff04883ca247bd48bccd68[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:47:48 2025 -0400
+
+    undid that last one
+
+[33mcommit 65ebfa056a49be293ff8aa13e42f9219b1d31871[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:41:26 2025 -0400
+
+    ptbits?
+
+[33mcommit b4199e424c80f66f9d117aba050aedf9a71c41a6[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:36:44 2025 -0400
+
+    added a process kill
+
+[33mcommit b6fbe9e888627fbf569b4e48f8f9527e19f5e9fa[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:30:20 2025 -0400
+
+    check in fault handler if page already exists
+
+[33mcommit 2ccfb95dba008a16104542f26952aef74aacd496[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:26:07 2025 -0400
+
+    a
+
+[33mcommit d52ff8148c0c0c6c9cf877aa8a8944c00cb02b4b[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:25:35 2025 -0400
+
+    printing page table at end of process fork
+
+[33mcommit fd94288b327517cd5dca4c81e3324eefb9c06640[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:22:00 2025 -0400
+
+    added makerules
+
+[33mcommit 632e72f45436e15a5422014dc8138dd26c4101d0[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:20:51 2025 -0400
+
+    adjusting simple program
+
+[33mcommit 8968b6cc076b1afb12994fd097d57ce5cdcbd26d[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:19:21 2025 -0400
+
+    adjusted simple hello world program
+
+[33mcommit d67dc44275ea2d47e2781d7d93c73dfa40274b1a[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 14:16:26 2025 -0400
+
+    made a new file to run, without forking
+
+[33mcommit 72e3e517317e44367c42530348d5d9d36595fa23[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:39:09 2025 -0400
+
+    removing 4 byte align check
+
+[33mcommit 44baadcbdb0dee649275fd7c5d19bb5e1cc5eea0[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:37:53 2025 -0400
+
+    more shift parens
+
+[33mcommit 71d89ae8590cf570f5e8940d94714f46d9aadf1e[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:33:38 2025 -0400
+
+    added paren
+
+[33mcommit 91e013358def989e34cc5d73ebdc4abdfe564a86[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:18:39 2025 -0400
+
+    freepage fix
+
+[33mcommit c1853bb7486814675ed2884d11da4eac652d9158[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:03:43 2025 -0400
+
+    4096
+
+[33mcommit e79051a0bd35ed5d4e9d6e26f446f9272dbaf364[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:01:53 2025 -0400
+
+    a
+
+[33mcommit 83dea52021972cf1986292071c3d7bb17e9715be[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 12:00:58 2025 -0400
+
+    manually
+
+[33mcommit 4acf4467ee37569b406d317aefebe9fc6d773a75[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:59:27 2025 -0400
+
+    lots of awful casts
+
+[33mcommit b53f88ebe87b6d6a0dc8c2faa47620c639b2bf44[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:56:46 2025 -0400
+
+    some parens
+
+[33mcommit a6fac2415c67d7c4f61778d0acf08fa726c46ce9[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:54:43 2025 -0400
+
+    aaaaa
+
+[33mcommit 8c652d336c9516c4516d32b9223b82621569daf2[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:54:08 2025 -0400
+
+    remove warnings
+
+[33mcommit 449469148dc8397ac08edbba61eb6916d3ddb398[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:46:05 2025 -0400
+
+    print statements for curuser etc
+
+[33mcommit 53ac0c3c607b497af3726d169b1e5b199598193a[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:40:12 2025 -0400
+
+    %d
+
+[33mcommit a601e36e802739655f12ea1cffa51cb6a08a1d54[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:38:48 2025 -0400
+
+    temp vals
+
+[33mcommit d353409ad66f133948b3ffdea6a6be4f84b4c735[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:34:18 2025 -0400
+
+    printing bytestocopy more
+
+[33mcommit 3849871b36a0cc85348b9a05bd0060fa31ce388d[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:19:03 2025 -0400
+
+    remove warnings
+
+[33mcommit ddfb786939bcea94fca8767312483e16ce970006[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Sat Nov 1 11:17:50 2025 -0400
+
+    changes
+
+[33mcommit a4472c2fb48aacb8a8dbca50794542572f60590d[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 15:19:22 2025 -0400
+
+    another dbg msg
+
+[33mcommit ff4d1f4b53155c95c959a6c6e3a183fc97d39664[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 15:13:38 2025 -0400
+
+    rollback
+
+[33mcommit 6202d568065f624d7f55a6d97b83a80e35eb4ffb[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 15:07:48 2025 -0400
+
+    more temps
+
+[33mcommit dd4706b2c11fe94a024c6123c346b3e347a58dc9[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 15:04:51 2025 -0400
+
+    int casts?
+
+[33mcommit 9aa9787c01dd1174511fd6dfeea5393d2373b038[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 14:29:07 2025 -0400
+
+    removed some dbg msgs
+
+[33mcommit bf7703b588c49268cd818f0b11901dfa6857a064[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Fri Oct 31 14:25:09 2025 -0400
+
+    added 4-byte alignment check
+
+[33mcommit 32b9b0fb68ff903b37b5e2cd1de983cac8467625[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:47:05 2025 -0400
+
+    so many debug statements
+
+[33mcommit ded9a3a47b7b4020c8b031b1defa04f017b278ca[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:42:22 2025 -0400
+
+    i think i found the voerflow
+
+[33mcommit 96c6043e2a612d1ec0849ba6b678fc666859bbe3[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:41:26 2025 -0400
+
+    tpo?
+
+[33mcommit 79e403d9381e21fcc75fed0f40574dee81a38901[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:40:46 2025 -0400
+
+    typo?
+
+[33mcommit 3860eed4e64a226f3a33f11b82fb072d0f8ec76f[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:40:12 2025 -0400
+
+    typo
+
+[33mcommit 6d4b3c2a56aed36eea3512cfba18095aa917b975[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:39:43 2025 -0400
+
+    typo
+
+[33mcommit 6dde763002019536e872a2e8dbfe3a9c51990947[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:39:11 2025 -0400
+
+    more dbg msgs
+
+[33mcommit 6b4ad31c2cf87041ecf598a8b446d9beb8b8aebd[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:35:12 2025 -0400
+
+    removed some dbg msgs
+
+[33mcommit 3d60f5b270d6c849dd6856d3d930e1763777d7fb[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:31:06 2025 -0400
+
+    what is up with this message crashing???
+
+[33mcommit 54a0a827b4e76de523e84538defad6b6ab104bb1[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:28:41 2025 -0400
+
+    how is the message not printing
+
+[33mcommit 0b246ece5c37b1e79b3100709eb44aa340758457[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:26:34 2025 -0400
+
+    vvar dclr at top
+
+[33mcommit 0c0c1dc348a9af1b25b9a712f3c2b18cf1cb12a4[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:25:45 2025 -0400
+
+    more error msgs
+
+[33mcommit 924d5f7892053085610a7700b519dd523b4d4fc1[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:24:34 2025 -0400
+
+    LOTS OF DBG MSGS
+
+[33mcommit c6178b31a592a4d2cc1b38109096e1c6cb26cc49[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:23:06 2025 -0400
+
+    more dbg msgs
+
+[33mcommit 87ee2e499d7e7ea1988fb92082dbb5da14599f80[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 22:19:49 2025 -0400
+
+    adding debug msgs in MemorymoveBetweenSpaces
+
+[33mcommit 8ff479d4025abd7e644f21c3b667d382bc24ae47[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 21:00:40 2025 -0400
+
+    stuck on 0x4 system interrupt error
+
+[33mcommit 944b2b09f8ccaaff63a715120f23cd7950eefc28[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:45:54 2025 -0400
+
+    more msg
+
+[33mcommit ff7fe2228d88cd7bd2491d4344ed3952163b2ebf[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:44:58 2025 -0400
+
+    db message?
+
+[33mcommit 29ed37a32126446eaf5acff06d7d76cc4c66a064[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:43:37 2025 -0400
+
+    rollback more
+
+[33mcommit b649f167864b758134dcbf9b3db1c51ac3cfb175[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:42:45 2025 -0400
+
+    trying to rollback
+
+[33mcommit 53d1dafb0df12bfc8516df796dc210b971215a1a[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:37:45 2025 -0400
+
+    debug statement
+
+[33mcommit f646a39f34bd15e2f294bd3e1829f65bb9d6638e[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:29:13 2025 -0400
+
+    var fix
+
+[33mcommit b6562b0b02cbb4721fcb70cc9f110ef40310248e[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:28:46 2025 -0400
+
+    implemented memorytranslateusertosystem
+
+[33mcommit b07c71b91f1b2a22b4b244b634333f7630f274d6[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:26:06 2025 -0400
+
+     i don't understand why i must declare vars at the top
+
+[33mcommit 5635bbbfb93ea996d4e8613a825a33b3080a7721[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:25:01 2025 -0400
+
+    512 lol
+
+[33mcommit b20d10d93cc83f00e28cabde7b1f0883c36d1ab3[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:24:29 2025 -0400
+
+    variables at the top?
+
+[33mcommit 293bc658a1c612211aebfb5bb7fdebde8359dc52[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:23:49 2025 -0400
+
+    chat wrote it
+
+[33mcommit 2d5a35bc52fbdbf2f70869ad159f8dd7eb493000[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:20:55 2025 -0400
+
+    i had the wrong fault address, thanks chat
+
+[33mcommit 9941a21721f401f764561c452d61ccf152c6baa7[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:08:38 2025 -0400
+
+    commented out???
+
+[33mcommit 091fdefb5537e45e7981833609374a26810e3038[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:05:31 2025 -0400
+
+    commenting out more annoying lines
+
+[33mcommit 313f758f8f9832963dbcd2fdba015a1c53f4a85d[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:04:47 2025 -0400
+
+    commenting out annowing lines
+
+[33mcommit 141135c90696be1d5f728001398981de62fcf8fd[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 19:03:12 2025 -0400
+
+    using chat's idea
+
+[33mcommit de0d70688f92817b2500d631594c54ac6023b82a[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:54:07 2025 -0400
+
+    *???
+
+[33mcommit 9b150637f208adb58b4648e59696616ebe4684ec[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:48:24 2025 -0400
+
+    i dunno
+
+[33mcommit 39f07d08b39bf50dc6d07c922d1e53e196180c3c[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:38:38 2025 -0400
+
+    *pcb->sysStackPtr?
+
+[33mcommit b1a82eecdc34fc5521ff1eb24098aa0bf01f5b7e[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:37:51 2025 -0400
+
+    a
+
+[33mcommit 7d5430950921a3fc50aee7b1b79dfc27e7d6d6e5[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:35:38 2025 -0400
+
+    commented out
+
+[33mcommit 330c155381932a66e1a035eb68d1c92f24225411[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 18:34:52 2025 -0400
+
+    memorypagefaulthandler stuff
+
+[33mcommit 7e0c30f6752f9c0eed3a19921731d8aeac11fa08[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 15:03:15 2025 -0400
+
+    fix
+
+[33mcommit de57aa0177ec34ff007184a84536d88cc20dd663[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 15:01:41 2025 -0400
+
+    memorypagefaulthandler sanity check
+
+[33mcommit c2791e88052374e451261e5d80c107cae69bce93[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 14:15:25 2025 -0400
+
+    minor fixes
+
+[33mcommit b1e4d404d7408a5803eb40a2a15a83eca976a814[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 14:13:54 2025 -0400
+
+    switched a bunch of pcb. to pcb->
+
+[33mcommit ca9ae67c95af3954c2ab97766bb173e4f6221b19[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 14:08:51 2025 -0400
+
+    filled in all the student stuff? moved things from processinit to processfork
+
+[33mcommit 19b042ce8ebb10c9f3d8d71338defdebbc07c18e[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 11:05:18 2025 -0400
+
+    switched tag from q to y
+
+[33mcommit e8219f63321c24603e7e4f7e2875f12ef799e939[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 11:01:16 2025 -0400
+
+    did i crack it?
+
+[33mcommit a39b9510d1cff1d3b4a507fb3dd77a58da447b70[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:51:27 2025 -0400
+
+    chat's suggestion
+
+[33mcommit 047ea3b43ca6ab61df039cc3fb59ccea6e049ad7[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:41:31 2025 -0400
+
+    ptr dereferece???
+
+[33mcommit c3c9e8c26380c58ccdafd18eb0d75cb0ede4e08d[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:38:57 2025 -0400
+
+    aaaa
+
+[33mcommit 16a2405439f3fc594a479e8d4772f6bdb51aab51[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:36:28 2025 -0400
+
+    ptr math
+
+[33mcommit b5cef8e955f712dbaf29c7a1caa4e617d43e59a5[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:34:04 2025 -0400
+
+    why do i have to declare vars at the top of a func
+
+[33mcommit d556b5bd576851db01831cbca7e6cf3914407390[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:33:05 2025 -0400
+
+    currentsavedframe test
+
+[33mcommit 8f1e38c5a213439084c84d2e7d568bda5aa72671[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:20:09 2025 -0400
+
+    debug msg
+
+[33mcommit 1ff4c2fe5792fe86f403a029e7c6ba7d73bb2e6c[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:18:13 2025 -0400
+
+    more debug messages
+
+[33mcommit 633a315ddc83802228ee39f533a9ad93f1032de9[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 10:13:00 2025 -0400
+
+    more processmoduleinit
+
+[33mcommit 2f7cfeadb474c667fe3b988348cf5b986196b2dd[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:56:23 2025 -0400
+
+    changed debug tag
+
+[33mcommit 9cf5be8602ef173d964c0a86c0ad2df919f7d8a6[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:55:21 2025 -0400
+
+    changed debug tag
+
+[33mcommit 373d630b2f6a332aa8d0e64f53108abd806fe372[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:48:40 2025 -0400
+
+    fixed memory modeul init
+
+[33mcommit be4514fd2f380b9419535ede0b5d8ef1862a76a7[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:44:18 2025 -0400
+
+    changed debug print
+
+[33mcommit a6806eae61eee8fbf6a7ec186efb6b0480d9bbf7[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:38:47 2025 -0400
+
+    added malloc and mfree declarations
+
+[33mcommit cee4f8cf676c1d4ba1d7db3d625b82fa7c779dd7[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:34:39 2025 -0400
+
+    fixed [] err
+
+[33mcommit 2651b9206010876af6a61c16c73623645dac5ec8[m
+Author: ASentientSwarmofBees <jasonr9llins@gmail.com>
+Date:   Thu Oct 30 09:33:18 2025 -0400
+
+    adding to process module init
