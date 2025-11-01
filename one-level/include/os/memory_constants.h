@@ -31,8 +31,8 @@
 // the maximum allowable address in the virtual address space. Note that this is not the 4-byte-aligned address, 
 //but rather the actual maximum address (it should end with 0xF).
 #define MAX_VIRTUAL_ADDRESS 0xFFFFF
-// 2MB in bytes = 2097152. /4 (for uint32) is 524288.
-#define MEM_MAX_PHYS_MEM 524288
+// 2MB in bytes = 2097152 bytes.
+#define MEM_MAX_PHYS_MEM 2097152
 //If this bit is set in a PTE, it means that the page should be marked readonly. We will ONLY set this bit when 
 //implementing fork is required, so be sure to set it to zero for now.
 #define MEM_PTE_READONLY 0x4
