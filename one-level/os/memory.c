@@ -143,9 +143,9 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
   unsigned char *curUser;         // Holds current physical address representing user-space virtual address
   int		bytesCopied = 0;  // Running counter
   int		bytesToCopy;      // Used to compute number of bytes left in page to be copied
-  uint32 temp1, temp2;            // Temporary variables for calculations
+  //uint32 temp1, temp2;            // Temporary variables for calculations
 
-  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), system, user, n);
+  dbprintf('m', "MemoryMoveBetweenSpaces (%d): Beginning. System: 0x%x, User: 0x%x, N: %d\n", GetCurrentPid(), (uint32)system, (uint32)user, n);
 
   while (n > 0) {
     // Translate current user page to system address.  If this fails, return
@@ -153,15 +153,15 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
 
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
 
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), system, user, curUser, n, bytesToCopy, bytesCopied);
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), (uint32)system, (uint32)user, curUser, n, bytesToCopy, bytesCopied);
 
     // If we could not translate address, exit now
     if (curUser == (unsigned char *)0) {
-      dbprintf('m', "MemoryMoveBetweenSpaces (%d): Exiting; could not translate address 0x%x.\n", GetCurrentPid(), curUser);
+      dbprintf('m', "MemoryMoveBetweenSpaces (%d): Exiting; could not translate address 0x%x.\n", GetCurrentPid(), (uint32)curUser);
       break;
     }
 
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully translated address 0x%x\n", GetCurrentPid(), curUser);
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully translated address 0x%x\n", GetCurrentPid(), (uint32)curUser);
 
     // Calculate the number of bytes to copy this time.  If we have more bytes
     // to copy than there are left in the current page, we'll have to just copy to the
@@ -177,7 +177,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     //temp1 = (uint32)MEM_PAGESIZE;
     //temp2 = (uint32)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
     //bytesToCopy = (int)(temp1 - temp2);
-    bytesToCopy = MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
+    bytesToCopy = (int)((uint32)MEM_PAGESIZE - (uint32)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
     //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Calculated bytes left in page as %d - 0x%x (or %d) = %d. Bytestocopy: %d\n", GetCurrentPid(), temp1, temp2, temp2, temp1 - temp2, bytesToCopy);
     //dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
     //dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
