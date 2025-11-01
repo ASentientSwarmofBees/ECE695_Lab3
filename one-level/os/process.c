@@ -494,14 +494,14 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
-    pcb->sysStackArea = MemoryAllocPage();
+    pcb->sysStackArea = MemoryAllocPage() << 12;
     dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb->sysStackArea);
 
     pcb->npages += 6;
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
-    pcb->sysStackPtr = (pcb->sysStackArea << 12) + 0xFFC;
+    stackframe = (uint32*)(pcb->sysStackArea + 0xFFC);
     dbprintf('p', "ProcessFork (%d): Set sysStackPtr to 0x%x.\n", GetCurrentPid(), pcb->sysStackPtr);
 
   //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
@@ -509,7 +509,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     //pcb.sysStackPtr -= PROCESS_STACK_FRAME_SIZE;
     //dbprintf('p', "ProcessFork (%d): Decremented sysStackPtr to 0x%x.\n", GetCurrentPid(), pcb.sysStackPtr);
   //This is done later with StackFrame now
-  stackframe = pcb->sysStackPtr;
+  //stackframe = pcb->sysStackPtr;
 
   //-Set the "currentSavedFrame" field of the PCB to the same thing as sysStackPtr.
     //pcbs[i].currentSavedFrame = pcbs[i].sysStackPtr;
