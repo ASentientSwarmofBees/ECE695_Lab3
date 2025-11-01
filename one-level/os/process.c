@@ -552,7 +552,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBASE]);
     pcb->currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTSIZE]);
-    pcb->currentSavedFrame[PROCESS_STACK_PTBITS] = (0x1 << MEM_L1FIELD_FIRST_BITNUM) | ((0x1 << MEM_L1FIELD_FIRST_BITNUM) << 16);
+    pcb->currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBITS]);
     
   if (isUser) {
