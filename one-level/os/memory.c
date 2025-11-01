@@ -153,7 +153,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
 
     curUser = (unsigned char *)MemoryTranslateUserToSystem (pcb, (uint32)user);
 
-    dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), (uint32)system, (uint32)user, curUser, n, bytesToCopy, bytesCopied);
+    dbprintf('m', "MemoryMoveBetweenSpaces (%d): While loop. System: 0x%x, User: 0x%x CurUser: 0x%x, N: %d, bytesToCopy: %d, bytesCopied: %d\n", GetCurrentPid(), (uint32)system, (uint32)user, (uint32)curUser, n, bytesToCopy, bytesCopied);
 
     // If we could not translate address, exit now
     if (curUser == (unsigned char *)0) {
@@ -177,7 +177,8 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     //temp1 = (uint32)MEM_PAGESIZE;
     //temp2 = (uint32)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
     //bytesToCopy = (int)(temp1 - temp2);
-    bytesToCopy = MEM_PAGESIZE - ((uint32)curUser & (MEM_ADDRESS_OFFSET_MASK));
+    //bytesToCopy = MEM_PAGESIZE - ((uint32)curUser & (MEM_ADDRESS_OFFSET_MASK));
+    bytesToCopy = (int)((uint32)MEM_PAGESIZE - (uint32)((uint32)curUser & (MEM_ADDRESS_OFFSET_MASK)));
     //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Calculated bytes left in page as %d - 0x%x (or %d) = %d. Bytestocopy: %d\n", GetCurrentPid(), temp1, temp2, temp2, temp1 - temp2, bytesToCopy);
     //dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
     //dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
