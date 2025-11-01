@@ -268,28 +268,30 @@ int MemoryPageFaultHandler(PCB *pcb) {
     return MEM_FAIL;
   }
 
-  if (fault_page >= sp_page) {
-    dbprintf('m', "MemoryPageFaultHandler (%d): growing stack, alloc page %d\n", GetCurrentPid(), fault_page);
-    if (pcb->pagetable[fault_page] & MEM_PTE_VALID) {
+  if (pcb->pagetable[fault_page] & MEM_PTE_VALID) {
       dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d already valid\n", GetCurrentPid(), fault_page);
       return MEM_FAIL;
-    }
+  }
+
+  if (fault_page < sp_page) {
+    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. fault_vaddr=0x%x user_sp=0x%x\n", GetCurrentPid(), fault_vaddr, user_sp);
+    ProcessKill();
+    return MEM_FAIL;
+  }
+
+    dbprintf('m', "MemoryPageFaultHandler (%d): growing stack, alloc page %d\n", GetCurrentPid(), fault_page);
+    
     newpage = MemoryAllocPage();
     if (newpage < 0) {
       dbprintf('m', "MemoryPageFaultHandler (%d): out of physical pages\n", GetCurrentPid());
       ProcessKill();
       return MEM_FAIL;
     }
+    
     pcb->pagetable[fault_page] = (newpage << 12) | MEM_PTE_VALID;
     pcb->npages++;
     dbprintf('m', "MemoryPageFaultHandler (%d): allocated phys page %d -> PTE %d\n", GetCurrentPid(), newpage, fault_page);
     return MEM_SUCCESS;
-  } else {
-    dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. fault_vaddr=0x%x user_sp=0x%x\n",
-             GetCurrentPid(), fault_vaddr, user_sp);
-    ProcessKill();
-    return MEM_FAIL;
-  }
 }
 
 
