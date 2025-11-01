@@ -479,17 +479,17 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
    //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
     dbprintf('p', "ProcessFork (%d): Allocating 4 virtual pages.\n", GetCurrentPid());
-    pcb->pagetable[0] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO 12 is a magic num
+    pcb->pagetable[0] = (MemoryAllocPage() << 12) | MEM_PTE_VALID; //TODO 12 is a magic num
     dbprintf('p', "ProcessFork (%d): Page 0 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[0]);
-    pcb->pagetable[1] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcb->pagetable[1] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 1 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[1]);
-    pcb->pagetable[2] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcb->pagetable[2] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 2 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[2]);
-    pcb->pagetable[3] = MemoryAllocPage() << 12 | MEM_PTE_VALID;
+    pcb->pagetable[3] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[3]);
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcb->pagetable[512-1] = MemoryAllocPage() << 12 | MEM_PTE_VALID; //TODO should be derived
+    pcb->pagetable[512-1] = (MemoryAllocPage() << 12) | MEM_PTE_VALID; //TODO should be derived
     dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[512-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
@@ -502,7 +502,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
     stackframe = (uint32*)(pcb->sysStackArea + 0xFFC);
-    dbprintf('p', "ProcessFork (%d): Set sysStackPtr to 0x%x.\n", GetCurrentPid(), (uint32)pcb->sysStackPtr);
+    dbprintf('p', "ProcessFork (%d): Set sysStackPtr to 0x%x.\n", GetCurrentPid(), (uint32)stackframe);
 
   //-Decrement syStackPtr by PROCESS_STACK_FRAME_SIZE to make it appear that a full set of registers have been
   //saved on the system stack (careful with pointer arithmetic)
