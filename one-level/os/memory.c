@@ -177,7 +177,7 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     //temp1 = (uint32)MEM_PAGESIZE;
     //temp2 = (uint32)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK);
     //bytesToCopy = (int)(temp1 - temp2);
-    bytesToCopy = (int)((uint32)MEM_PAGESIZE - (uint32)((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
+    bytesToCopy = (int)((uint32)MEM_PAGESIZE - (uint32)((uint32)curUser & (MEM_ADDRESS_OFFSET_MASK)));
     //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Calculated bytes left in page as %d - 0x%x (or %d) = %d. Bytestocopy: %d\n", GetCurrentPid(), temp1, temp2, temp2, temp1 - temp2, bytesToCopy);
     //dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
     //dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
