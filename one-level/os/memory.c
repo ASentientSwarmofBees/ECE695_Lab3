@@ -270,6 +270,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
 
   if (pcb->pagetable[fault_page] & MEM_PTE_VALID) {
       dbprintf('m', "MemoryPageFaultHandler (%d): PTE %d already valid\n", GetCurrentPid(), fault_page);
+      ProcessKill();
       return MEM_FAIL;
   }
 
