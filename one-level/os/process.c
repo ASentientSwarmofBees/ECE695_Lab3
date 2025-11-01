@@ -696,6 +696,13 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   }
 
   dbprintf ('p', "Leaving ProcessFork (%s)\n", name);
+  for (int i = 0; i < 512; i++) //TODO derive
+  {
+    if(pcb->pagetable[i] & MEM_PTE_VALID)
+    {
+      dbprintf('m', "ProcessFork (%d): pagetable[%d] = 0x%x.\n", GetCurrentPid(), i, pcb->pagetable[i]);
+    }
+  }
   // Return the process number (found by subtracting the PCB number
   // from the base of the PCB array).
   return (pcb - pcbs);
