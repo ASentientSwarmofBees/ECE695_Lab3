@@ -696,7 +696,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   }
 
   dbprintf ('p', "Leaving ProcessFork (%s)\n", name);
-  for (int i = 0; i < 512; i++) //TODO derive
+  for (i = 0; i < 512; i++) //TODO derive
   {
     if(pcb->pagetable[i] & MEM_PTE_VALID)
     {
