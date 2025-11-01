@@ -61,7 +61,12 @@ int MemoryGetSize() {
 //----------------------------------------------------------------------
 void MemoryModuleInit() {
   int i;
-  int lastPage = lastosaddress / 4096;
+  int lastPage;
+  if (lastosaddress % 4096 == 0) {
+    lastPage = lastosaddress / 4096;
+  } else {
+    lastPage = (lastosaddress / 4096) + 1; //This is truncated, so make sure the last nonfilled page is counted
+  }
   dbprintf('z', "MemoryModuleInit (%d): marking pages in use in freemap through address %x, page %d\n", GetCurrentPid(), lastosaddress, lastPage); 
   
   for (i = 0; i < 16; i++) //TODO: derive 16
