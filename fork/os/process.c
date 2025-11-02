@@ -128,7 +128,7 @@ void ProcessModuleInit () {
     // STUDENT: Initialize the PCB's page table here.
     //-------------------------------------------------------   
     
-    for (j = 0; j < 512; j++) //TODO derive
+    for (j = 0; j < MEM_NUM_PAGE_TABLE_ENTRIES; j++)
     {
       pcbs[i].pagetable[j] = 0x0;
     }
@@ -186,7 +186,7 @@ void ProcessFreeResources (PCB *pcb) {
 
   MemoryFreePage(pcb->sysStackArea);
   pcb->npages--;
-  for (i = 0; i < 512; i++) //TODO derive
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if(pcb->pagetable[i] & MEM_PTE_VALID)
     {
@@ -479,22 +479,22 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
    //-allocate 4 virtual pages at page number 0 (virtual address 0x0) for code and global variables
     dbprintf('p', "ProcessFork (%d): Allocating 4 virtual pages.\n", GetCurrentPid());
-    pcb->pagetable[0] = (MemoryAllocPage() << 12) | MEM_PTE_VALID; //TODO 12 is a magic num
+    pcb->pagetable[0] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 0 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[0]);
-    pcb->pagetable[1] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
+    pcb->pagetable[1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 1 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[1]);
-    pcb->pagetable[2] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
+    pcb->pagetable[2] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 2 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[2]);
-    pcb->pagetable[3] = (MemoryAllocPage() << 12) | MEM_PTE_VALID;
+    pcb->pagetable[3] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[3]);
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcb->pagetable[512-1] = (MemoryAllocPage() << 12) | MEM_PTE_VALID; //TODO should be derived
+    pcb->pagetable[512-1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
     dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[512-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
-    pcb->sysStackArea = MemoryAllocPage() << 12;
+    pcb->sysStackArea = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
     dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb->sysStackArea);
 
     pcb->npages += 6;
@@ -550,7 +550,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     //dbprintf('z', "ProcessFork (%d): Attempting to access currentSavedFrame[%d].\n", GetCurrentPid(), PROCESS_STACK_PTBASE);
     pcb->currentSavedFrame[PROCESS_STACK_PTBASE] = pcb->pagetable;
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBASE]);
-    pcb->currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
+    pcb->currentSavedFrame[PROCESS_STACK_PTSIZE] = MEM_NUM_PAGE_TABLE_ENTRIES;
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTSIZE]);
     pcb->currentSavedFrame[PROCESS_STACK_PTBITS] = MEM_L1FIELD_FIRST_BITNUM | (MEM_L1FIELD_FIRST_BITNUM << 16);
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBITS] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBITS]);
@@ -586,7 +586,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
 
     //-initialize user stack pointer (r29) to bottom of user stack (highest 4-byte aligned address in the 
     //virtual address space)
-    pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = (511 << 12) | 0xFFC; //TODO should be derived
+    pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] = ((MEM_NUM_PAGE_TABLE_ENTRIES-1) << MEM_L1FIELD_FIRST_BITNUM) | 0xFFC;
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER]);
 
     //--------------------------------------------------------------------
@@ -696,7 +696,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   }
 
   dbprintf ('p', "Leaving ProcessFork (%s)\n", name);
-  for (i = 0; i < 512; i++) //TODO derive
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if(pcb->pagetable[i] & MEM_PTE_VALID)
     {
