@@ -548,7 +548,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   //-Use currentSavedFrame like an array to set all the register values needed (PROCESS_STACK_PTBASE, 
     //PROCESS_STACK_PTSIZE, PROCESS_STACK_PTBITS, PROCESS_STACK_USER_STACKPOINTER)
     //dbprintf('z', "ProcessFork (%d): Attempting to access currentSavedFrame[%d].\n", GetCurrentPid(), PROCESS_STACK_PTBASE);
-    pcb->currentSavedFrame[PROCESS_STACK_PTBASE] = pcb->pagetable[0] & 0xFFFFF000;
+    pcb->currentSavedFrame[PROCESS_STACK_PTBASE] = pcb->pagetable;
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTBASE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTBASE]);
     pcb->currentSavedFrame[PROCESS_STACK_PTSIZE] = 512; //TODO derive
     dbprintf('p', "ProcessFork (%d): set currentSavedFrame[PROCESS_STACK_PTSIZE] to 0x%x.\n", GetCurrentPid(), pcb->currentSavedFrame[PROCESS_STACK_PTSIZE]);
