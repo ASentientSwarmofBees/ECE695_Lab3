@@ -97,7 +97,7 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
   offset = addr & MEM_ADDRESS_OFFSET_MASK;
 
   //basic bounds check
-  if (page >= 512) { //TODO: derive 512 from constants
+  if (page >= MEM_NUM_PAGE_TABLE_ENTRIES) {
     dbprintf('m', "MemoryTranslateUserToSystem: page %d out of range\n", page);
     return 0;
   }
@@ -262,7 +262,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
            GetCurrentPid(), fault_vaddr, user_sp);
 
   /* basic bounds check for pagetable index */
-  if (fault_page >= 512) { //Todo: derive
+  if (fault_page >= MEM_NUM_PAGE_TABLE_ENTRIES) {
     dbprintf('m', "MemoryPageFaultHandler (%d): fault_page %d out of range\n", GetCurrentPid(), fault_page);
     ProcessKill();
     return MEM_FAIL;
