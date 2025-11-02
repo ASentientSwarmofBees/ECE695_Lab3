@@ -1076,4 +1076,47 @@ void ProcessKill() {
   ProcessSchedule();
 }
 
+//--------------------------------------------------------------------------
+// ProcessRealFork
+/*
+When forking a new process with level 1 (L1) page tables, you will need to explicitly allocate new L1 page tables 
+for the child process and copy all the data from the parent's L1 tables into the child's L1 tables. Of course, 
+you will need to duplicate the PCB first. You can use bcopy((char *)currentPCB, (char *)childpcb, sizeof(PCB)); 
+Use ProcessSetResult() to return values. Don't forget to put child PCB onto the end of the run queue.
 
+You must implement reference counters for physical pages in this question.
+
+You must implement a handler for the trap number 0x8 for readonly page access violations.
+
+do not forget to fix the various system stack pointers and values on the system stack when creating the new 
+system stack page. 
+any addresses that point into the system stack can be broken down as: address = (page_base_address + offset), in 
+the same way that one-level paging has a page base address and an offset. Therefore, when copying the system 
+stack, as long as you know which addresses to fix that point into the system stack, you can fix them by finding 
+the offset portion of those addresses in the parent, and adding it to the new page base address in the child. 
+
+The items that need to be fixed for this lab in DLXOS are:
+
+    the sysStackPtr field in the child's PCB
+    the currentSavedFrame field in the child's PCB
+    the PROCESS_STACK_PTBASE field within the current saved frame (this is not computed by finding an offset, but 
+      rather is simply set to the base address of the child's level 1 page table).
+
+*/
+//--------------------------------------------------------------------------
+int ProcessRealFork() {
+
+  //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
+  //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
+
+  //When either the parent or child tries to write to one of the shared pages, the hardware will throw a 
+  //TRAP_ROP_ACCESS exception (trap number 0x8 in DLXOS). The page which caused the exception will be stored in 
+  //the PROCESS_STACK_FAULT register in the currentSavedFrame of the PCB.
+
+  //the operating system to keep a global array of reference counters that are associated with each physical page.
+  //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 
+  //physical page is freed from a process's page table, the counter should be decremented. Once the counter for a 
+  //particular page reaches 0, it should be marked as free in the global freemap. 
+  printf("ProcessRealFork: Not implemented yet!\n");
+  return -1;
+}

@@ -108,6 +108,7 @@ void ProcessDestroy(PCB *pcb);
 extern unsigned GetCurrentPid();
 int GetPidFromAddress(PCB *pcb);
 void ProcessKill();
+int ProcessRealFork();
 
 //-------------------------------------------------------
 // Put any functions prototypes that you define here.
