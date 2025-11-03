@@ -1143,13 +1143,18 @@ int ProcessRealFork(PCB *currentPCB) {
 
   bcopy((char *)currentPCB, (char *)childPCB, sizeof(PCB));
 
+  //generate new page table for child
+
   //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
   //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (currentPCB->pagetable[i] & MEM_PTE_VALID) {
+      dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x. Setting readonly bit.\n", i, currentPCB->pagetable[i]);
       currentPCB->pagetable[i] |= MEM_PTE_READONLY;
+      dbprintf('p', "ProcessRealFork: child PTE[%d] is 0x%x. Setting readonly bit.\n", i, childPCB->pagetable[i]);
       childPCB->pagetable[i] |= MEM_PTE_READONLY;
+      dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child is 0x%x.\n", i, currentPCB->pagetable[i], childPCB->pagetable[i]);
 
   //the operating system to keep a global array of reference counters that are associated with each physical page.
   //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 
@@ -1187,10 +1192,10 @@ The items that need to be fixed for this lab in DLXOS are:
   dbprintf('p', "ProcessRealFork(%d): Copying system stack contents.\n", GetCurrentPid());
   bcopy((char *)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (char *)newSystemStackPage, MEM_PAGESIZE);
 
-  dbprintf('p', "childPCB currentSavedFrame 0x%x.\n", (uint32)childPCB->currentSavedFrame);
-  dbprintf('p', "offset masked 0x%x.\n", (uint32)((uint32)(childPCB->currentSavedFrame) & 0x00000FFF));
-  dbprintf('p', "newSystemStackPage 0x%x.\n", (uint32)newSystemStackPage); 
-  dbprintf('p', "with offset 0x%x.\n", (uint32)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF)) | newSystemStackPage);
+  //dbprintf('p', "childPCB currentSavedFrame 0x%x.\n", (uint32)childPCB->currentSavedFrame);
+  //dbprintf('p', "offset masked 0x%x.\n", (uint32)((uint32)(childPCB->currentSavedFrame) & 0x00000FFF));
+  //dbprintf('p', "newSystemStackPage 0x%x.\n", (uint32)newSystemStackPage); 
+  //dbprintf('p', "with offset 0x%x.\n", (uint32)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF)) | newSystemStackPage);
 
   childPCB->currentSavedFrame = (uint32)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame);
@@ -1199,6 +1204,7 @@ The items that need to be fixed for this lab in DLXOS are:
   childPCB->sysStackPtr = (uint32)(((uint32)(childPCB->sysStackPtr) & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB sysStackPtr to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->sysStackPtr);
 
+  /*
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (currentPCB->pagetable[i] & MEM_PTE_VALID)
@@ -1206,6 +1212,7 @@ The items that need to be fixed for this lab in DLXOS are:
       dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child PTE[%d] is 0x%x.\n", i, currentPCB->pagetable[i], i, childPCB->pagetable[i]);
     }
   }
+  */
 
   //  | everything down here was also taken from ProcessFork()
   //  |
