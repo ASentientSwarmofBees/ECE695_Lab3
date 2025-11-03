@@ -1155,7 +1155,7 @@ int ProcessRealFork(PCB *currentPCB) {
   //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 
   //physical page is freed from a process's page table, the counter should be decremented. Once the counter for a 
   //particular page reaches 0, it should be marked as free in the global freemap. 
-      MemIncrementReferenceCounter(currentPCB->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM);
+      MemIncrementReferenceCounter((uint32)(currentPCB->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM));
     }
   }
 
@@ -1175,9 +1175,9 @@ The items that need to be fixed for this lab in DLXOS are:
       rather is simply set to the base address of the child's level 1 page table).
   */
 
-  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent currentSavedFrame: 0x%x, childPCB currentSavedFrame: 0x%x.\n", GetCurrentPid(), currentPCB->currentSavedFrame, childPCB->currentSavedFrame);
-  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent PTBase: 0x%x, childPCB PTBase: 0x%x.\n", GetCurrentPid(), currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
-  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent sysStackPtr: 0x%x, childPCB sysStackPtr: 0x%x.\n", GetCurrentPid(), currentPCB->sysStackPtr, childPCB->sysStackPtr);
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent currentSavedFrame: 0x%x, childPCB currentSavedFrame: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame, (uint32)childPCB->currentSavedFrame);
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent PTBase: 0x%x, childPCB PTBase: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (uint32)childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent sysStackPtr: 0x%x, childPCB sysStackPtr: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->sysStackPtr, (uint32)childPCB->sysStackPtr);
 
   // Allocate a new page for the system stack of the child process
   newSystemStackPage = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
@@ -1185,7 +1185,7 @@ The items that need to be fixed for this lab in DLXOS are:
 
   // Copy over the system stack byte by byte
   dbprintf('m', "ProcessRealFork(%d): Calling copying system stack contents.\n", GetCurrentPid());
-  bcopy(currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], newSystemStackPage, MEM_PAGESIZE);
+  bcopy((char *)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (char *)newSystemStackPage, MEM_PAGESIZE);
 
   childPCB->currentSavedFrame = (childPCB->currentSavedFrame && 0x00000FFF) | newSystemStackPage;
   dbprintf('m', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), childPCB->currentSavedFrame);

@@ -22,6 +22,7 @@ int MemoryPageFaultHandler(PCB *pcb);
 int MemoryAllocPage();
 void MemoryFreePage();
 void MemoryHandleROPAccess(PCB *pcb, uint32 iar);
+void MemIncrementReferenceCounter(uint32 page);
 
 //---------------------------------------------------------
 // Put your function prototypes here
