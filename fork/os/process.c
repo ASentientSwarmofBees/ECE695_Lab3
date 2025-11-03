@@ -1108,6 +1108,7 @@ int ProcessRealFork(PCB *currentPCB) {
   PCB *childPCB;
   int intrs;               // Stores previous interrupt settings.
   int newSystemStackPage; // for storing childPCB's new system stack page
+  int i;        // loop variable
 
   //When either the parent or child tries to write to one of the shared pages, the hardware will throw a 
   //TRAP_ROP_ACCESS exception (trap number 0x8 in DLXOS). The page which caused the exception will be stored in 
@@ -1144,7 +1145,7 @@ int ProcessRealFork(PCB *currentPCB) {
 
   //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
   //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
-  for (int i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (currentPCB->pagetable[i] & MEM_PTE_VALID) {
       currentPCB->pagetable[i] |= MEM_PTE_READONLY;
