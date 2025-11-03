@@ -449,7 +449,7 @@ int mfree(PCB *currentPCB, void *ptr) {
   int order, i;
   uint32 heapBaseVaddr = currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
   uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
-  int blockOffset, blockIndex;
+  int blockOffset, blockIndex, changeMade;
 
   dbprintf('y', "Entering mfree.\n");
   //printHeap(currentPCB);
@@ -480,6 +480,44 @@ int mfree(PCB *currentPCB, void *ptr) {
   for(i = blockIndex; i < blockIndex + (1 << order); i++) {
     currentPCB->heapBuddyMap[i] = order; //Set avail bit to 0
   }
+
+  //Now comes the hard part. Need to free neighboring blocks if they are also free, and continue recursively
+  changeMade = 0;
+  while(!changeMade) {
+    if (blockIndex % (1 << (order + 1)) == 0) {
+      //This is the first block in the pair
+      if (currentPCB->heapBuddyMap[blockIndex + (1 << order)] == order) {
+        //The buddy block is also free, so merge
+        dbprintf('y', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex, blockIndex + (1 << order), order + 1);
+        for(i = blockIndex; i < blockIndex + (1 << (order + 1)); i++) {
+          currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
+        }
+        //blockIndex remains the same
+        changeMade = 1;
+      }
+      //Else, buddy block is not free, so done
+    }
+    else {
+      //This is the second block in the pair
+      if (currentPCB->heapBuddyMap[blockIndex - (1 << order)] == order) {
+        //The buddy block is also free, so merge
+        dbprintf('y', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex - (1 << order), blockIndex, order + 1);
+        for(i = blockIndex - (1 << order); i < blockIndex + (1 << order); i++) {
+          currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
+        }
+        //Update blockIndex to the start of the new merged block
+        blockIndex = blockIndex - (1 << order);
+        changeMade = 1;
+      }
+    }
+    if (changeMade)
+    {
+      //keep searching for more merges at next order
+      order++;
+      changeMade = 0;
+    }
+  }
+  dbprintf('y', "mfree: Finished merging heap blocks.\n");
   printHeap(currentPCB);
   
   //dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
