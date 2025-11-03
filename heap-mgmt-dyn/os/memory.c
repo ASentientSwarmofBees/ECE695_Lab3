@@ -282,7 +282,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
   heapBlockIndex = heapBlockOffset / 32;
   printHeap(pcb);
   dbprintf('m', "MemoryPageFaultHandler (%d): heapBlockOffset=0x%x, heapBlockIndex=%d, heap val = %d.\n", GetCurrentPid(), heapBlockOffset, heapBlockIndex, pcb->heapBuddyMap[heapBlockIndex]);
-  if (!(pcb->heapBuddyMap[heapBlockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL)) {
+  if ((pcb->heapBuddyMap[heapBlockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL)) {
     //This is a valid heap access; a new page needs to be allocated for it
     VALID_HEAP_ACCESS = 1;
     dbprintf('m', "MemoryPageFaultHandler (%d): valid heap access at block index %d (vaddr=0x%x)\n", GetCurrentPid(), heapBlockIndex, fault_vaddr);
