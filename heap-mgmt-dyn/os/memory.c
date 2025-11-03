@@ -256,7 +256,9 @@ int MemoryPageFaultHandler(PCB *pcb) {
   /* compute page numbers (4KB pages -> shift 12) */
   uint32 fault_page = fault_vaddr >> 12;
   uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
-  int newpage;
+  int newpage, heapBlockIndex;
+  uint32 heapBaseVaddr, heapBlockOffset;
+  bool VALID_HEAP_ACCESS = false;
 
   dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
            GetCurrentPid(), fault_vaddr, user_sp);
@@ -274,7 +276,17 @@ int MemoryPageFaultHandler(PCB *pcb) {
       return MEM_FAIL;
   }
 
-  if (fault_page < sp_page) {
+  //PART 4: If vaddr corresponds to a valid heap buddy block, then allocate a new page on the PT for it.
+  heapBaseVaddr = pcb->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
+  heapBlockOffset = fault_vaddr - heapBaseVaddr;
+  heapBlockIndex = heapBlockOffset / 32;
+  if (!(pcb->heapBuddyMap[heapBlockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL)) {
+    //This is a valid heap access; a new page needs to be allocated for it
+    VALID_HEAP_ACCESS = true;
+    dbprintf('m', "MemoryPageFaultHandler (%d): valid heap access at block index %d (vaddr=0x%x)\n", GetCurrentPid(), heapBlockIndex, fault_vaddr);
+  }
+
+  if (fault_page < sp_page && !VALID_HEAP_ACCESS) {
     dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. fault_vaddr=0x%x user_sp=0x%x\n", GetCurrentPid(), fault_vaddr, user_sp);
     ProcessKill();
     return MEM_FAIL;
@@ -441,7 +453,7 @@ void *malloc(PCB *currentPCB, int memsize) {
   
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
-  dbprintf('y', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  dbprintf('m', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
   printHeap(currentPCB);
   return (uint32*) blockVaddr;
 }
