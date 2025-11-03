@@ -1188,9 +1188,9 @@ The items that need to be fixed for this lab in DLXOS are:
   bcopy((char *)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (char *)newSystemStackPage, MEM_PAGESIZE);
 
   dbprintf('p', "childPCB currentSavedFrame 0x%x.\n", (uint32)childPCB->currentSavedFrame);
-  dbprintf('p', "offset masked 0x%x.\n", (uint32)(childPCB->currentSavedFrame & 0x00000FFF));
+  dbprintf('p', "offset masked 0x%x.\n", (uint32)((uint32)(childPCB->currentSavedFrame) & 0x00000FFF));
   dbprintf('p', "newSystemStackPage 0x%x.\n", (uint32)newSystemStackPage); 
-  dbprintf('p', "with offset 0x%x.\n", (uint32)((childPCB->currentSavedFrame & 0x00000FFF) | newSystemStackPage));
+  dbprintf('p', "with offset 0x%x.\n", (uint32)(((uint32)(childPCB->currentSavedFrame & 0x00000FFF)) | newSystemStackPage));
 
   childPCB->currentSavedFrame = (uint32)((childPCB->currentSavedFrame & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame);
