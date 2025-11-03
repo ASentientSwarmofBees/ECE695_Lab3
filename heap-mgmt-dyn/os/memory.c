@@ -543,7 +543,7 @@ void printHeap(PCB *currentPCB) {
       dbprintf('m', ".");
     }
     else { dbprintf('m', " "); }
-    dbprintf('m', "%d", currentPCB->heapBuddyMap[i] & ~MEM_HEAP_BUDDY_MAP_AVAIL);
+    dbprintf('m', "%d ", currentPCB->heapBuddyMap[i] & ~MEM_HEAP_BUDDY_MAP_AVAIL);
     if ((i+1) % 16 == 0) {
       dbprintf('m', "\n");
     }

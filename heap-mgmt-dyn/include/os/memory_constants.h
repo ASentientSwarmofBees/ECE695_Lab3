@@ -50,9 +50,9 @@
 #define MEM_NUM_PAGE_TABLE_ENTRIES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE) //512
 
 #define MEM_HEAP_SMALLEST_ALLOCATABLE_BLOCK 32 //bytes
-#define MEM_HEAP_NUM_BLOCKS (MEM_PAGESIZE / MEM_HEAP_SMALLEST_ALLOCATABLE_BLOCK) //128
-#define MEM_HEAP_BUDDY_MAP_AVAIL 0x8 //bit to indicate if block is in use or not
-#define MEM_HEAP_MAX_ORDER 7
+#define MEM_HEAP_NUM_BLOCKS ((MEM_PAGESIZE * 16) / MEM_HEAP_SMALLEST_ALLOCATABLE_BLOCK) //128
+#define MEM_HEAP_BUDDY_MAP_AVAIL 0x10 //bit to indicate if block is in use or not. had to change from 0x8 to 0x10 to make room for higher order pages
+#define MEM_HEAP_MAX_ORDER 11 //Was 7 for 4096 bytes (4KB), now increased to 11 for 64KB
 #define MEM_HEAP_BIT_SHIFT_FOR_ORDER_0 5 //since I decided to make the minimum order 32 bytes, we sometimes need a bitshift of 5 to go from order 0 to 32 bytes for calculations.
 
 // 2MB of physical memory in 4KB pages, which is 512 pages.

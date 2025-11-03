@@ -136,7 +136,7 @@ void ProcessModuleInit () {
     //PART 3: init heap buddy map
     for (j = 0; j < MEM_HEAP_NUM_BLOCKS; j++)
     {
-      pcbs[i].heapBuddyMap[j] = 7; // mark all blocks as free, order 7
+      pcbs[i].heapBuddyMap[j] = MEM_HEAP_MAX_ORDER; // mark all blocks as free, order 11
     }
 
     // Finally, insert the link into the queue
