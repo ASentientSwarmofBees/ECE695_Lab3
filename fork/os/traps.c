@@ -363,6 +363,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       //TODO: Is this correct? Just call ProcessRealFork()?
       ihandle = GetCurrentPid();
       result = ProcessRealFork(currentPCB);
+      printf("TRAP: currentID: %d, childID: %d\n", ihandle, result);
       ProcessSetResult(currentPCB, result == ihandle ? 0 : result); //Return child PID to parent, 0 to child
       break;
     case TRAP_PROCESS_SLEEP:
