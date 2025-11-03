@@ -422,7 +422,6 @@ void *malloc(PCB *currentPCB, int memsize) {
           dbprintf('y', "malloc: Split block to order %d, need to keep splitting to reach order %d.\n", splittingOrder-1, order);
           blockToSplitFound = 0;
           splittingOrder = order;
-        }
       }
     }
   }
