@@ -21,8 +21,8 @@ void main (int argc, char *argv[])
   ptr4[0] = 42; //test writing to allocated memory
   Printf("hello_world (%d): reading back value from allocated memory: %d\n", getpid(), ptr4[0]);
 
-  //mfree(ptr1);
-  //mfree(ptr2);
-  //mfree(ptr3);
-  //mfree(ptr4);
+  mfree(ptr1);
+  mfree(ptr2);
+  mfree(ptr3);
+  mfree(ptr4);
 }
