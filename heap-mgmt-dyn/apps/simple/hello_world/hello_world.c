@@ -3,7 +3,7 @@
 
 void main (int argc, char *argv[])
 {
-  int *ptr1, *ptr2, *ptr3;
+  int *ptr1, *ptr2, *ptr3, *ptr4;
   Printf("hello_world (%d): Hello world!\n", getpid());
   Printf("hello_world (%d): malloc-ing 10 bytes\n", getpid());
   ptr1 = malloc(10);
@@ -14,8 +14,11 @@ void main (int argc, char *argv[])
   Printf("hello_world (%d): malloc-ing 1000 bytes\n", getpid());
   ptr3 = malloc(1000);
   //Printf("hello_world (%d): malloc returned address 0x%x\n", getpid(), ptr);
+  Printf("hello_world (%d): malloc-ing 10000 bytes\n", getpid());
+  ptr4 = malloc(10000);
 
   mfree(ptr1);
   mfree(ptr2);
   mfree(ptr3);
+  mfree(ptr4);
 }
