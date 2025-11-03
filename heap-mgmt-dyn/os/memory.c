@@ -258,7 +258,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
   uint32 sp_page = (user_sp - 8) >> 12; /* per spec: legal if fault >= (sp - 8) */
   int newpage, heapBlockIndex;
   uint32 heapBaseVaddr, heapBlockOffset;
-  bool VALID_HEAP_ACCESS = false;
+  int VALID_HEAP_ACCESS = 0;
 
   dbprintf('m', "MemoryPageFaultHandler (%d): fault_vaddr=0x%x user_sp=0x%x\n",
            GetCurrentPid(), fault_vaddr, user_sp);
@@ -282,11 +282,11 @@ int MemoryPageFaultHandler(PCB *pcb) {
   heapBlockIndex = heapBlockOffset / 32;
   if (!(pcb->heapBuddyMap[heapBlockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL)) {
     //This is a valid heap access; a new page needs to be allocated for it
-    VALID_HEAP_ACCESS = true;
+    VALID_HEAP_ACCESS = 1;
     dbprintf('m', "MemoryPageFaultHandler (%d): valid heap access at block index %d (vaddr=0x%x)\n", GetCurrentPid(), heapBlockIndex, fault_vaddr);
   }
 
-  if (fault_page < sp_page && !VALID_HEAP_ACCESS) {
+  if (fault_page < sp_page && VALID_HEAP_ACCESS == 0) {
     dbprintf('m', "MemoryPageFaultHandler (%d): Segmentation Fault. fault_vaddr=0x%x user_sp=0x%x\n", GetCurrentPid(), fault_vaddr, user_sp);
     ProcessKill();
     return MEM_FAIL;
