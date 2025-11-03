@@ -5,14 +5,14 @@ void main (int argc, char *argv[])
 {
   int child_pid;
 
-  Printf("hello_world (%d): this is the main program.\n", getpid());
+  Printf("hello_world (%d): this is the main program.\n", (int) getpid());
   child_pid = fork();
   if (child_pid != 0)
   {
-    Printf("hello_world (%d): this is the parent process. child_id = %d.\n", getpid(), child_pid);
+    Printf("hello_world (%d): this is the parent process. child_id = %d.\n", (int) getpid(), child_pid);
   }
   else
   {
-    Printf("hello_world (%d): this is the child process. child_id = %d.\n", getpid(), child_pid);
+    Printf("hello_world (%d): this is the child process.\n", (int) getpid());
   }
 }
