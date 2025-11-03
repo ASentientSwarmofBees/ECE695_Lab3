@@ -364,7 +364,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       //TODO: Is this correct? Just call ProcessRealFork()?
       ihandle = GetCurrentPid();
       result = ProcessRealFork(currentPCB, &childPCB);
-      printf("TRAP: currentID: %d, childID: %d\n", ihandle, result);
+      dbprintf('t', "Fork trap: parentID: %d, childID: %d\n", ihandle, result);
       ProcessSetResult(currentPCB, result); //Return child PID to parent
       ProcessSetResult(childPCB, 0); //Return 0 to child
       break;
