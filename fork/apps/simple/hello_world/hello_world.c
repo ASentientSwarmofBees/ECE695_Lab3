@@ -8,7 +8,7 @@ void main (int argc, char *argv[])
   Printf("hello_world (%d): this is the main program.\n", (int) getpid());
   child_pid = fork();
   Printf("hello_world (%d): forked a child process with id %d.\n", (int) getpid(), child_pid);
-  if (getpid() != 0)
+  if (child_pid != 0)
   {
     Printf("hello_world (%d): this is the parent process. child_id = %d.\n", (int) getpid(), child_pid);
   }
