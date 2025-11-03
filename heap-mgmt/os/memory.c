@@ -435,7 +435,6 @@ void *malloc(PCB *currentPCB, int memsize) {
     return NULL;
   }
   
-
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
   dbprintf('y', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
