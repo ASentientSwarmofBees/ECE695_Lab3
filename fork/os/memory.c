@@ -389,6 +389,7 @@ void MemoryHandleROPAccess(PCB *pcb) {
     //PTE marked as read/write (i.e. the readonly bit is cleared).
     
     newPage = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
+    dbprintf('m', "MemoryHandleROPAccess: Copying from 0x%x to 0x%x (old to new pte)\n", pcb->pagetable[fault_pte_page], newPage);
     bcopy(pcb->pagetable[fault_pte_page], newPage, MEM_PAGESIZE);
     pcb->pagetable[fault_pte_page] = ((uint32)pcb->pagetable[fault_pte_page] & 0x00000FFF) | newPage;
     pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
