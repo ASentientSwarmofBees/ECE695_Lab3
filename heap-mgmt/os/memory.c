@@ -348,7 +348,7 @@ void *malloc(int memsize) {
 
   //Fail if memsize is less than or equal to 0 or greater than heap size
   if (memsize <= 0 || memsize > MEM_PAGESIZE) {
-    dbprintf('m', "malloc: Requested memory size %d is invalid.\n", memsize);
+    dbprintf('y', "malloc: Requested memory size %d is invalid.\n", memsize);
     return NULL;
   }
   //If requested space is not a multiple of 4 bytes, increase it until it is
@@ -373,7 +373,7 @@ void *malloc(int memsize) {
       break;
     }
   }
-  dbprintf('m', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
+  dbprintf('y', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
   //order is now set to the smallest order that can fit memsize
   while(!allocationCompleted)
   {
@@ -392,16 +392,16 @@ void *malloc(int memsize) {
       }
     }
     if(allocationCompleted) { break; }
-    dbprintf('m', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
+    dbprintf('y', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
     // Was not able to allocate at this order, need to find a block of next higher order to split in half
     splittingOrder = order;
     while(!blockToSplitFound) {
       splittingOrder++;
-      dbprintf('m', "malloc: Looking for block of order %d to split.\n", splittingOrder);
+      dbprintf('y', "malloc: Looking for block of order %d to split.\n", splittingOrder);
       for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << splittingOrder)) {
         if (currentPCB->heapBuddyMap[blockIndex] == (splittingOrder)) {
           // Found a block to split
-          dbprintf('m', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
+          dbprintf('y', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
           for(i = blockIndex; i < blockIndex + (1 << splittingOrder); i++) {
             currentPCB->heapBuddyMap[i] = splittingOrder-1;
           }
@@ -413,7 +413,7 @@ void *malloc(int memsize) {
         order++;
         if (order > 7) {
           // No blocks available to split
-          dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+          dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
           return NULL;
         }
       }
@@ -432,14 +432,14 @@ void *malloc(int memsize) {
   }
   else
   {
-    dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+    dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
     return NULL;
   }
   
 
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
-  dbprintf('m', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  dbprintf('y', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
   return (uint32*) blockVaddr;
 }
 
