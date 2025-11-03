@@ -447,15 +447,31 @@ int mfree(PCB *currentPCB, void *ptr) {
   uint32 vaddr;
   uint32 paddr;
   int order;
+  uint32 heapBaseVaddr = currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
+  uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
+  int blockOffset, blockIndex;
 
   dbprintf('y', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
   vaddr = (uint32)ptr;
   paddr = MemoryTranslateUserToSystem(currentPCB, vaddr);
   dbprintf('y', "mfree: Corresponding physical address is 0x%x.\n", paddr);
 
+  blockOffset = vaddr - heapBaseVaddr;
+  blockIndex = blockOffset / 32; //32 bytes per block
+  dbprintf('y', "mfree: Block offset is %d bytes, block index is %d.\n", blockOffset, blockIndex);
+
+  //check to make sure that block is in use
+  if (currentPCB->heapBuddyMap[blockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL) {
+    dbprintf('y', "mfree: Error - block at index %d is not currently allocated.\n", blockIndex);
+    return -1;
+  }
+
+  order = currentPCB->heapBuddyMap[blockIndex] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
+  dbprintf('y', "mfree: Block at index %d is of order %d.\n", blockIndex, order);
+
   //order = currentPCB->heapBuddyMap[((uint32)ptr - (currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM)) / 32] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
 
-  dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
+  //dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
 
