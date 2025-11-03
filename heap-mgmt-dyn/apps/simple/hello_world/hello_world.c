@@ -17,6 +17,9 @@ void main (int argc, char *argv[])
   Printf("hello_world (%d): malloc-ing 10000 bytes\n", getpid());
   ptr4 = malloc(10000);
 
+  Printf("hello_world (%d): trying to write to allocated memory (should cause a page fault!)\n", getpid());
+  ptr4[0] = 42; //test writing to allocated memory
+
   mfree(ptr1);
   mfree(ptr2);
   mfree(ptr3);
