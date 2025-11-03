@@ -492,6 +492,7 @@ int mfree(PCB *currentPCB, void *ptr) {
         for(i = blockIndex; i < blockIndex + (1 << (order + 1)); i++) {
           currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
         }
+        dbprintf('y', "mfree: Merged block is now at index %d.\n", blockIndex);
         //blockIndex remains the same
         changeMade = 1;
       }
@@ -507,6 +508,7 @@ int mfree(PCB *currentPCB, void *ptr) {
         }
         //Update blockIndex to the start of the new merged block
         blockIndex = blockIndex - (1 << order);
+        dbprintf('y', "mfree: Merged block is now at index %d.\n", blockIndex);
         changeMade = 1;
       }
     }
@@ -514,6 +516,7 @@ int mfree(PCB *currentPCB, void *ptr) {
     {
       //keep searching for more merges at next order
       order++;
+      dbprint('y', "mfree: Continuing to look for merges at order %d.\n", order);
       changeMade = 0;
     }
   }
