@@ -1185,14 +1185,17 @@ The items that need to be fixed for this lab in DLXOS are:
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent currentSavedFrame: 0x%x, childPCB currentSavedFrame: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame, (uint32)childPCB->currentSavedFrame);
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent PTBase: 0x%x, childPCB PTBase: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (uint32)childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent sysStackPtr: 0x%x, childPCB sysStackPtr: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->sysStackPtr, (uint32)childPCB->sysStackPtr);
+  dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent sysStackArea: 0x%x, childPCB sysStackArea: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->sysStackArea, (uint32)childPCB->sysStackArea);
 
   // Allocate a new page for the system stack of the child process
   newSystemStackPage = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
   dbprintf('p', "ProcessRealFork(%d): Allocated new page for child sys stack at 0x%x\n", GetCurrentPid(), newSystemStackPage);
 
   // Copy over the system stack byte by byte
-  dbprintf('p', "ProcessRealFork(%d): Copying system stack contents.\n", GetCurrentPid());
-  bcopy((char *)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (char *)newSystemStackPage, MEM_PAGESIZE);
+  dbprintf('p', "ProcessRealFork(%d): Copying system stack contents from 0x%x to 0x%x\n", GetCurrentPid(), (uint32)currentPCB->sysStackArea, (uint32)newSystemStackPage);
+  bcopy((char *)currentPCB->sysStackArea, (char *)newSystemStackPage, MEM_PAGESIZE);
+  childPCB->sysStackArea = (uint32 *)newSystemStackPage;
+  dbprintf('p', "ProcessRealFork(%d): Updated childPCB sysStackArea to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->sysStackArea);
 
   //dbprintf('p', "childPCB currentSavedFrame 0x%x.\n", (uint32)childPCB->currentSavedFrame);
   //dbprintf('p', "offset masked 0x%x.\n", (uint32)((uint32)(childPCB->currentSavedFrame) & 0x00000FFF));
