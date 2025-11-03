@@ -1109,6 +1109,7 @@ int ProcessRealFork(PCB *currentPCB) {
   int intrs;               // Stores previous interrupt settings.
   int newSystemStackPage; // for storing childPCB's new system stack page
   int i;        // loop variable
+  printf("entering PROCESSREALFORK\n");
 
   //When either the parent or child tries to write to one of the shared pages, the hardware will throw a 
   //TRAP_ROP_ACCESS exception (trap number 0x8 in DLXOS). The page which caused the exception will be stored in 
