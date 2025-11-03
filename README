@@ -1,0 +1,71 @@
+Part 1 (one-level/)
+To build the os:
+mainframer.sh "cd os && make"
+
+To build the example program:
+mainframer.sh "cd apps/simple && make"
+
+To run with only printf's:
+dlxsim -D x -x os/work/os.dlx.obj -a -D x -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+To run with debug messages (memory and process tags):
+dlxsim -D mp -x os/work/os.dlx.obj -a -D mp -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+Notes:
+This is a simple hello world program to prove that process creation works.
+
+
+
+Part 2 (fork/)
+To build the os:
+mainframer.sh "cd os && make"
+
+To build the example program:
+mainframer.sh "cd apps/simple && make"
+
+To run with only printf's:
+dlxsim -D x -x os/work/os.dlx.obj -a -D x -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+To run with debug messages (memory and process tags):
+dlxsim -D mp -x os/work/os.dlx.obj -a -D mp -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+Notes:
+This user program simply creates a child and has the two resulting processes print messages.
+
+
+
+Part 3 (heap-mgmt/)
+To build the os:
+mainframer.sh "cd os && make"
+
+To build the example program:
+mainframer.sh "cd apps/simple && make"
+
+To run with only printf's:
+dlxsim -D x -x os/work/os.dlx.obj -a -D x -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+To run with debug messages (memory and process tags):
+dlxsim -D mp -x os/work/os.dlx.obj -a -D mp -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+Notes:
+This user process calls malloc with larger and larger sizes, then frees those. With MP tags, it will print out the whole heap to show the order of each block and which ones are allocated (they'll have a little dot next to them.)
+I used order 0 block size of 32 bytes, up to order 7 block size of a full page, 4096 bytes.
+
+
+
+Part 4 (heap-mgmt-dyn/)
+To build the os:
+mainframer.sh "cd os && make"
+
+To build the example program:
+mainframer.sh "cd apps/simple && make"
+
+To run with only printf's:
+dlxsim -D x -x os/work/os.dlx.obj -a -D x -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+To run with debug messages (memory and process tags):
+dlxsim -D mp -x os/work/os.dlx.obj -a -D mp -u apps/simple/hello_world/work/hello_world.dlx.obj
+
+Notes:
+Same as the user process in part 3, but the user program in this one mallocs a block larger than a single physical page to test that new pages are allocated for the heap correctly.
+Still using order 0 blocks being 32 bytes, so the full 64KB heap is an order 11 block.
