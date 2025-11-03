@@ -139,12 +139,6 @@ void ProcessModuleInit () {
     }
   }
 
-  // Initialize the reference counter array for physical pages.
-  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
-  {
-    referenceCounter[i] = 0;
-  }
-
   // There are no processes running at this point, so currentPCB=NULL
   currentPCB = NULL;
   dbprintf ('p', "Leaving ProcessModuleInit\n");
@@ -1087,7 +1081,7 @@ void ProcessKill() {
 /*
 When forking a new process with level 1 (L1) page tables, you will need to explicitly allocate new L1 page tables 
 for the child process and copy all the data from the parent's L1 tables into the child's L1 tables. Of course, 
-you will need to duplicate the PCB first. You can use bcopy((char *)currentPCB, (char *)childpcb, sizeof(PCB)); 
+you will need to duplicate the PCB first. You can use bcopy((char *)currentPCB, (char *)childPCB, sizeof(PCB)); 
 Use ProcessSetResult() to return values. Don't forget to put child PCB onto the end of the run queue.
 
 You must implement reference counters for physical pages in this question.
@@ -1111,7 +1105,7 @@ The items that need to be fixed for this lab in DLXOS are:
 */
 //--------------------------------------------------------------------------
 int ProcessRealFork(PCB *currentPCB) {
-  PCB *childpcb;
+  PCB *childPCB;
   int intrs;               // Stores previous interrupt settings.
   int newSystemStackPage; // for storing childPCB's new system stack page
 
@@ -1146,7 +1140,7 @@ int ProcessRealFork(PCB *currentPCB) {
   //  |
   //  | everything up there was taken from ProcessFork()
 
-  bcopy((char *)currentPCB, (char *)childpcb, sizeof(PCB));
+  bcopy((char *)currentPCB, (char *)childPCB, sizeof(PCB));
 
   //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
   //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
