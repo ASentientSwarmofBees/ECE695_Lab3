@@ -336,13 +336,120 @@ void MemoryFreePage(uint32 page) {
   }
 }
 
-//TODO implement
 void *malloc(int memsize) {
+  uint32 blockVaddr;
+  uint32 blockPaddr;
+  uint32 heapBaseVaddr = currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
+  uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
+  uint32 blockOffset;
+  int order, blockIndex, splittingOrder;
+  int allocationCompleted = 0;
+  int blockToSplitFound = 0;
 
+  //Fail if memsize is less than or equal to 0 or greater than heap size
+  if (memsize <= 0 || memsize > MEM_PAGESIZE) {
+    dbprintf('m', "malloc: Requested memory size %d is invalid.\n", memsize);
+    return NULL;
+  }
+  //If requested space is not a multiple of 4 bytes, increase it until it is
+  while (memsize % 4 != 0) {
+    memsize++;
+  }
+
+  // Find a block of adequate size that isn't in use yet
+  // Smallest block size: 4 bytes.
+  /*
+  Order 7: 4096 bytes
+  Order 6: 2048 bytes
+  Order 5: 1024 bytes
+  Order 4: 512 bytes
+  Order 3: 256 bytes
+  Order 2: 128 bytes
+  Order 1: 64 bytes
+  Order 0: 32 bytes
+  */
+  for (order = 0; order <= 7; order++) {
+    if (memsize <= (1 << (order + 5))) { //2^5 = 32
+      break;
+    }
+  }
+  dbprintf('m', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
+  //order is now set to the smallest order that can fit memsize
+  while(!allocationCompleted)
+  {
+    for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << order)) {
+      //Check if block is in use
+      if (currentPCB->heapBuddyMap[blockIndex] == order)
+      {
+        // Block is = to just order, which means the avail bit is not being used
+        // The block is free, so allocate it
+        // Need to set all other blocks in this range to indicate they are also part of this allocation
+        for(i = blockIndex; i < blockIndex + (1 << order); i++) {
+          currentPCB->heapBuddyMap[i] = order | 0x8; //Set avail bit to 1
+        }
+        allocationCompleted = 1;
+        break;
+      }
+    }
+    if(allocationCompleted) { break; }
+    dpprintf('m', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
+    // Was not able to allocate at this order, need to find a block of next higher order to split in half
+    splittingOrder = order;
+    while(!blockToSplitFound) {
+      splittingOrder++;
+      dpprintf('m', "malloc: Looking for block of order %d to split.\n", splittingOrder);
+      for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << splittingOrder)) {
+        if (currentPCB->heapBuddyMap[blockIndex] == (splittingOrder)) {
+          // Found a block to split
+          dbprintf('m', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
+          for(i = blockIndex; i < blockIndex + (1 << splittingOrder); i++) {
+            currentPCB->heapBuddyMap[i] = splittingOrder-1; //Second half
+          }
+          blockToSplitFound = 1;
+          break;
+        }
+      }
+      if (!blockToSplitFound) {
+        order++;
+        if (order > 7) {
+          // No blocks available to split
+          dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+          return NULL;
+        }
+      }
+      if (blockToSplitFound) {
+        if (splittingOrder != order+1) {
+          // Need to keep splitting until we reach desired order
+          blockToSplitFound = 0;
+          splittingOrder = order;
+        }
+      }
+    }
+  }
+  if (allocationComplete)
+  {
+    blockOffset = blockIndex * 32; //32 bytes per block
+  }
+  else
+  {
+    dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+    return NULL;
+  }
+  
+
+  blockVaddr = heapBaseVaddr + blockOffset;
+  blockPaddr = heapBasePaddr + blockOffset;
+  dbprintf('m', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
+  return (uint32*) vaddr;
 }
 
-//TODO iimplement
+//TODO implement
 int mfree(void *ptr) {
+  int memsize;
+  uint32 vaddr;
+  uint32 paddr;
+
+  dbprintf('m', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
 

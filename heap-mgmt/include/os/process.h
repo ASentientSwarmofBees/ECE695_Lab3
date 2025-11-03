@@ -42,9 +42,11 @@ typedef struct PCB {
   unsigned int	flags;
   char		name[80];	// Process name
   /* Put the size of the L1 page table here in pagetable[_] */
-  uint32	pagetable[512]; // Statically allocated page table, TODO: should be derived from memory_constants.h?
+  uint32	pagetable[MEM_NUM_PAGE_TABLE_ENTRIES]; // Statically allocated page table
   int		npages;		// Number of pages allocated to this process
   Link		*l;		// Used for keeping PCB in queues
+  int heapPTEPageNum;    // PTE page num for heap ADDED IN PART 3
+  uint32 heapBuddyMap[MEM_HEAP_NUM_BLOCKS]; // Buddy map for heap management
 } PCB;
 
 extern PCB	*currentPCB;

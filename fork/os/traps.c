@@ -361,7 +361,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PROCESS_FORK:
       dbprintf ('t', "Got a fork trap!\n");
-      //TODO: Is this correct? Just call ProcessRealFork()?
       ihandle = GetCurrentPid();
       result = ProcessRealFork(currentPCB, &childPCB);
       dbprintf('t', "Fork trap: parentID: %d, childID: %d\n", ihandle, result);
@@ -540,7 +539,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       MemoryPageFaultHandler(currentPCB);
       break;
     case TRAP_ROP_ACCESS:
-      //TODO: is this correct??? check if this works. the func is currently just a printf, so.
       dbprintf ('t', "Got a read-only page access violation trap!\n");
       // Handle read-only page access violation here
       MemoryHandleROPAccess(currentPCB);

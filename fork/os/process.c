@@ -910,7 +910,6 @@ void main (int argc, char *argv[])
   printf ("Available memory: 0x%x -> 0x%x.\n", (int)lastosaddress, MemoryGetSize ());
   printf ("Argument count is %d.\n", argc);
   for (i = 0; i < argc; i++) {
-    //TODO: comment?
     printf ("Argument %d is %s.\n", i, argv[i]);
   }
 
@@ -1156,7 +1155,7 @@ int ProcessRealFork(PCB *currentPCB, PCB **childPCBToReturn) {
       currentPCB->pagetable[i] |= MEM_PTE_READONLY;
       //dbprintf('p', "ProcessRealFork: child PTE[%d] is 0x%x. Setting readonly bit.\n", i, childPCB->pagetable[i]);
       childPCB->pagetable[i] |= MEM_PTE_READONLY;
-      //dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child is 0x%x.\n", i, currentPCB->pagetable[i], childPCB->pagetable[i]);
+      dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child is 0x%x.\n", i, currentPCB->pagetable[i], childPCB->pagetable[i]);
 
   //the operating system to keep a global array of reference counters that are associated with each physical page.
   //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 

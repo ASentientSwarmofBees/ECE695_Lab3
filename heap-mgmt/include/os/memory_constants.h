@@ -47,7 +47,11 @@
     // "offset" portion of an address.
 #define MEM_ADDRESS_OFFSET_MASK 0xFFF
 
-#define MEM_NUM_PAGE_TABLE_ENTRIES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE)
+#define MEM_NUM_PAGE_TABLE_ENTRIES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE) //512
+
+#define MEM_HEAP_SMALLEST_ALLOCATABLE_BLOCK 32 //bytes
+#define MEM_HEAP_NUM_BLOCKS (MEM_PAGESIZE / MEM_HEAP_SMALLEST_ALLOCATABLE_BLOCK) //128
+#define MEM_HEAP_BUDDY_MAP_AVAIL 0x8 //bit to indicate if block is in use or not
 
 // 2MB of physical memory in 4KB pages, which is 512 pages.
 

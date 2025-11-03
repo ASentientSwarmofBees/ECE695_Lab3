@@ -133,6 +133,12 @@ void ProcessModuleInit () {
       pcbs[i].pagetable[j] = 0x0;
     }
 
+    //PART 3: init heap buddy map
+    for (j = 0; j < MEM_HEAP_NUM_BLOCKS; j++)
+    {
+      pcbs[i].heapBuddyMap[j] = 7; // mark all blocks as free, order 7
+    }
+
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
       printf("FATAL ERROR: could not insert PCB link into queue in ProcessModuleInit!\n");
@@ -185,7 +191,8 @@ void ProcessFreeResources (PCB *pcb) {
   //------------------------------------------------------------
 
   MemoryFreePage(pcb->sysStackArea);
-  pcb->npages--;
+  MemoryFreePage(pcb->heapArea); //ADDED IN PART 3
+  pcb->npages -= 2;
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if(pcb->pagetable[i] & MEM_PTE_VALID)
@@ -497,7 +504,11 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     pcb->sysStackArea = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
     dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb->sysStackArea);
 
-    pcb->npages += 6;
+    //NEW TO PART 3: ALLOC PAGE FOR HEAP
+    pcb->heapPTEPageNum = MEM_NUM_PAGE_TABLE_ENTRIES-2;
+    pcb->pagetable[pcb->heapPTEPageNum] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
+
+    pcb->npages += 7;
 
     //-Set system stack pointer to the bottom of system stack (highest 4-byte aligned address in the system
     //stack page)
