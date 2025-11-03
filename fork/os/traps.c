@@ -364,7 +364,8 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       ihandle = GetCurrentPid();
       result = ProcessRealFork(currentPCB);
       printf("TRAP: currentID: %d, childID: %d\n", ihandle, result);
-      ProcessSetResult(currentPCB, result == ihandle ? 0 : result); //Return child PID to parent, 0 to child
+      ProcessSetResult(currentPCB, result); //Return child PID to parent
+      ProcessSetResult(&pcbs[result], 0); //Return 0 to child
       break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");
