@@ -482,7 +482,7 @@ int mfree(PCB *currentPCB, void *ptr) {
   }
 
   //Now comes the hard part. Need to free neighboring blocks if they are also free, and continue recursively
-  changeMade = 0;
+  changeMade = 1;
   while(changeMade != 0) {
     changeMade = 0;
     if (blockIndex % (1 << (order + 1)) == 0) {
