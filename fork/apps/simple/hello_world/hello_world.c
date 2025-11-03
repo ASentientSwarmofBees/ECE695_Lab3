@@ -11,4 +11,8 @@ void main (int argc, char *argv[])
   {
     Printf("hello_world (%d): this is the parent process. child_id = %d.\n", (int) getpid(), child_pid);
   }
+  else
+  {
+    Printf("hello_world (%d): this is the child process.\n", (int) getpid());
+  }
 }
