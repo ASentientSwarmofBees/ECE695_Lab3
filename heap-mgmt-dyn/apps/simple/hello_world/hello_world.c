@@ -21,12 +21,12 @@ void main (int argc, char *argv[])
   ptr4[0] = 42; //test writing to allocated memory
   Printf("hello_world (%d): reading back value from allocated memory: %d\n", getpid(), ptr4[0]);
 
-  Printf("hello_world (%d): freeing allocated memory at %x\n", getpid(), ptr1);
+  Printf("hello_world (%d): freeing allocated memory at ptr1\n", getpid());
   mfree(ptr1);
-  Printf("hello_world (%d): freeing allocated memory at %x\n", getpid(), ptr2);
+  Printf("hello_world (%d): freeing allocated memory at ptr2\n", getpid());
   mfree(ptr2);
-  Printf("hello_world (%d): freeing allocated memory at %x\n", getpid(), ptr3);
+  Printf("hello_world (%d): freeing allocated memory at ptr3\n", getpid());
   mfree(ptr3);
-  Printf("hello_world (%d): freeing allocated memory at %x\n", getpid(), ptr4);
+  Printf("hello_world (%d): freeing allocated memory at ptr4\n", getpid());
   mfree(ptr4);
 }
