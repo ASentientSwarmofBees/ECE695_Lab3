@@ -338,6 +338,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
   int	intrs;
   uint32 handle;
   int ihandle;
+  PCB *childPCB;
 
   dbprintf ('t',"Interrupt cause=0x%x iar=0x%x isr=0x%x args=0x%08x.\n",
 	    cause, iar, isr, (int)trapArgs);
@@ -362,7 +363,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       dbprintf ('t', "Got a fork trap!\n");
       //TODO: Is this correct? Just call ProcessRealFork()?
       ihandle = GetCurrentPid();
-      PCB *childPCB;
       result = ProcessRealFork(currentPCB, &childPCB);
       printf("TRAP: currentID: %d, childID: %d\n", ihandle, result);
       ProcessSetResult(currentPCB, result); //Return child PID to parent
