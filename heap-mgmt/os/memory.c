@@ -189,12 +189,12 @@ int MemoryMoveBetweenSpaces (PCB *pcb, unsigned char *system, unsigned char *use
     //bytesToCopy = (int)((uint32)MEM_PAGESIZE - (uint32)((uint32)curUser & (MEM_ADDRESS_OFFSET_MASK)));
 
     //dbprintf('m', "MemoryMoveBetweenSpaces (%d): Calculated bytes left in page as %d - 0x%x (or %d) = %d. Bytestocopy: %d\n", GetCurrentPid(), temp1, temp2, temp2, temp1 - temp2, bytesToCopy);
-    //dbprintf('y', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
-    //dbprintf('y', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
-    //dbprintf('y', "MEM_ADDRESS_OFFSET_MASK = 0x%x\n", MEM_ADDRESS_OFFSET_MASK);
-    //dbprintf('y', "curUser & mask = 0x%x, or %d\n", ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
-    //dbprintf('y', "MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK) = 0x%x, or %d\n", MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
-    //dbprintf('y', "bytesToCopy = 0x%x, or %d\n", bytesToCopy, bytesToCopy);
+    //dbprintf('m', "MEM_PAGESIZE = 0x%x, or %d\n", MEM_PAGESIZE, MEM_PAGESIZE);
+    //dbprintf('m', "curUser = 0x%x, or %d. *curUser = 0x%x, or %d.\n", curUser, curUser, *curUser, *curUser);
+    //dbprintf('m', "MEM_ADDRESS_OFFSET_MASK = 0x%x\n", MEM_ADDRESS_OFFSET_MASK);
+    //dbprintf('m', "curUser & mask = 0x%x, or %d\n", ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
+    //dbprintf('m', "MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK) = 0x%x, or %d\n", MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK));
+    //dbprintf('m', "bytesToCopy = 0x%x, or %d\n", bytesToCopy, bytesToCopy);
     dbprintf('m', "MemorymoveBetweenSpaces (%d): curUser: 0x%x, Mask: 0x%x\n", GetCurrentPid(), (uint32)curUser, MEM_ADDRESS_OFFSET_MASK);
     dbprintf('m', "MemoryMoveBetweenSpaces (%d): Successfully assigned bytesToCopy to %d - 0x%x (or %d) = 0x%x (or %d). BytesToCopy = %d, 0x%x\n", GetCurrentPid(), MEM_PAGESIZE, ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), MEM_PAGESIZE - ((uint32)curUser & MEM_ADDRESS_OFFSET_MASK), bytesToCopy, bytesToCopy);
     
@@ -346,11 +346,11 @@ void *malloc(PCB *currentPCB, int memsize) {
   int allocationCompleted = 0;
   int blockToSplitFound = 0;
 
-  dbprintf('y', "malloc: Requested memory size %d (0x%x) bytes.\n", memsize, memsize);
+  dbprintf('m', "malloc: Requested memory size %d (0x%x) bytes.\n", memsize, memsize);
 
   //Fail if memsize is less than or equal to 0 or greater than heap size
   if (memsize <= 0 || memsize > MEM_PAGESIZE) {
-    dbprintf('y', "malloc: Requested memory size %d is invalid.\n", memsize);
+    dbprintf('m', "malloc: Requested memory size %d is invalid.\n", memsize);
     return NULL;
   }
   //If requested space is not a multiple of 4 bytes, increase it until it is
@@ -375,7 +375,7 @@ void *malloc(PCB *currentPCB, int memsize) {
       break;
     }
   }
-  dbprintf('y', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
+  dbprintf('m', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
   //order is now set to the smallest order that can fit memsize
   while(!allocationCompleted)
   {
@@ -394,21 +394,21 @@ void *malloc(PCB *currentPCB, int memsize) {
       }
     }
     if(allocationCompleted) { break; }
-    dbprintf('y', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
+    dbprintf('m', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
     // Was not able to allocate at this order, need to find a block of next higher order to split in half
     splittingOrder = order;
     while(!blockToSplitFound) {
       splittingOrder++;
       if (splittingOrder > 7) {
           // No blocks available to split
-          dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+          dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
           return NULL;
       }
-      dbprintf('y', "malloc: Looking for block of order %d to split.\n", splittingOrder);
+      dbprintf('m', "malloc: Looking for block of order %d to split.\n", splittingOrder);
       for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << splittingOrder)) {
         if (currentPCB->heapBuddyMap[blockIndex] == (splittingOrder)) {
           // Found a block to split
-          dbprintf('y', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
+          dbprintf('m', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
           for(i = blockIndex; i < blockIndex + (1 << splittingOrder); i++) {
             currentPCB->heapBuddyMap[i] = splittingOrder-1;
           }
@@ -416,10 +416,10 @@ void *malloc(PCB *currentPCB, int memsize) {
           break;
         }
       }
-      //dbprintf('y', "malloc: block split search for loop done\n");
+      //dbprintf('m', "malloc: block split search for loop done\n");
       if (blockToSplitFound && splittingOrder != order+1) {
           // Need to keep splitting until we reach desired order
-          dbprintf('y', "malloc: Split block to order %d, need to keep splitting to reach order %d.\n", splittingOrder-1, order);
+          dbprintf('m', "malloc: Split block to order %d, need to keep splitting to reach order %d.\n", splittingOrder-1, order);
           blockToSplitFound = 0;
           splittingOrder = order;
       }
@@ -431,13 +431,13 @@ void *malloc(PCB *currentPCB, int memsize) {
   }
   else
   {
-    dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+    dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
     return NULL;
   }
   
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
-  dbprintf('y', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  dbprintf('m', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
   printHeap(currentPCB);
   return (uint32*) blockVaddr;
 }
@@ -451,29 +451,29 @@ int mfree(PCB *currentPCB, void *ptr) {
   uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
   int blockOffset, blockIndex, changeMade;
 
-  dbprintf('y', "Entering mfree.\n");
+  dbprintf('m', "Entering mfree.\n");
   //printHeap(currentPCB);
 
-  //dbprintf('y', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
+  //dbprintf('m', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
   vaddr = (uint32)ptr;
   paddr = MemoryTranslateUserToSystem(currentPCB, vaddr);
-  //dbprintf('y', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x.\n", vaddr, paddr);
+  //dbprintf('m', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x.\n", vaddr, paddr);
 
   blockOffset = vaddr - heapBaseVaddr;
   blockIndex = blockOffset / 32; //32 bytes per block
-  //dbprintf('y', "mfree: Block offset is %d bytes, block index is %d.\n", blockOffset, blockIndex);
+  //dbprintf('m', "mfree: Block offset is %d bytes, block index is %d.\n", blockOffset, blockIndex);
 
   //check to make sure that block is in use
-  //dbprintf('y', "mfree: Buddy map entry at index %d is 0x%x.\n", blockIndex, currentPCB->heapBuddyMap[blockIndex]);
+  //dbprintf('m', "mfree: Buddy map entry at index %d is 0x%x.\n", blockIndex, currentPCB->heapBuddyMap[blockIndex]);
   if (!(currentPCB->heapBuddyMap[blockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL)) {
-    dbprintf('y', "mfree: Error - block at index %d is not currently allocated.\n", blockIndex);
+    dbprintf('m', "mfree: Error - block at index %d is not currently allocated.\n", blockIndex);
     return -1;
   }
 
   order = currentPCB->heapBuddyMap[blockIndex] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
-  //dbprintf('y', "mfree: Block at index %d is of order %d.\n", blockIndex, order);
+  //dbprintf('m', "mfree: Block at index %d is of order %d.\n", blockIndex, order);
 
-  dbprintf('y', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + 5)), blockOffset);
+  dbprintf('m', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + 5)), blockOffset);
   //order = currentPCB->heapBuddyMap[((uint32)ptr - (currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM)) / 32] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
 
   //Mark all blocks in this allocation as free
@@ -489,11 +489,11 @@ int mfree(PCB *currentPCB, void *ptr) {
       //This is the first block in the pair
       if (currentPCB->heapBuddyMap[blockIndex + (1 << order)] == order) {
         //The buddy block is also free, so merge
-        dbprintf('y', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex, blockIndex + (1 << order), order + 1);
+        dbprintf('m', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex, blockIndex + (1 << order), order + 1);
         for(i = blockIndex; i < blockIndex + (1 << (order + 1)); i++) {
           currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
         }
-        dbprintf('y', "mfree: Merged block is now at index %d.\n", blockIndex);
+        dbprintf('m', "mfree: Merged block is now at index %d.\n", blockIndex);
         //blockIndex remains the same
         changeMade = 1;
       }
@@ -503,13 +503,13 @@ int mfree(PCB *currentPCB, void *ptr) {
       //This is the second block in the pair
       if (currentPCB->heapBuddyMap[blockIndex - (1 << order)] == order) {
         //The buddy block is also free, so merge
-        dbprintf('y', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex - (1 << order), blockIndex, order + 1);
+        dbprintf('m', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex - (1 << order), blockIndex, order + 1);
         for(i = blockIndex - (1 << order); i < blockIndex + (1 << order); i++) {
           currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
         }
         //Update blockIndex to the start of the new merged block
         blockIndex = blockIndex - (1 << order);
-        dbprintf('y', "mfree: Merged block is now at index %d.\n", blockIndex);
+        dbprintf('m', "mfree: Merged block is now at index %d.\n", blockIndex);
         changeMade = 1;
       }
     }
@@ -517,29 +517,29 @@ int mfree(PCB *currentPCB, void *ptr) {
     {
       //keep searching for more merges at next order
       order++;
-      dbprintf('y', "mfree: Continuing to look for merges at order %d.\n", order);
+      dbprintf('m', "mfree: Continuing to look for merges at order %d.\n", order);
     }
   }
-  dbprintf('y', "mfree: Finished merging heap blocks.\n");
+  dbprintf('m', "mfree: Finished merging heap blocks.\n");
   printHeap(currentPCB);
   
-  //dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
+  //dbprintf('m', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
 
 void printHeap(PCB *currentPCB) {
   int i;
 
-  dbprintf("y", "Heap Buddy Map for process %d:\n", GetCurrentPid());
+  dbprintf("m", "Heap Buddy Map for process %d:\n", GetCurrentPid());
   for (i = 0; i < MEM_HEAP_NUM_BLOCKS; i++) {
     if (currentPCB->heapBuddyMap[i] & MEM_HEAP_BUDDY_MAP_AVAIL) {
-      dbprintf('y', ".");
+      dbprintf('m', ".");
     }
-    else { dbprintf('y', " "); }
-    dbprintf('y', "%d", currentPCB->heapBuddyMap[i] & ~MEM_HEAP_BUDDY_MAP_AVAIL);
+    else { dbprintf('m', " "); }
+    dbprintf('m', "%d", currentPCB->heapBuddyMap[i] & ~MEM_HEAP_BUDDY_MAP_AVAIL);
     if ((i+1) % 16 == 0) {
-      dbprintf('y', "\n");
+      dbprintf('m', "\n");
     }
   }
-  dbprintf('y', "\n");
+  dbprintf('m', "\n");
 }
