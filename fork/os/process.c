@@ -1179,7 +1179,7 @@ The items that need to be fixed for this lab in DLXOS are:
     the PROCESS_STACK_PTBASE field within the current saved frame (this is not computed by finding an offset, but 
       rather is simply set to the base address of the child's level 1 page table).
   */
-
+  dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent pcb: 0x%x, child pcb: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB, (uint32)childPCB);
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent currentSavedFrame: 0x%x, childPCB currentSavedFrame: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame, (uint32)childPCB->currentSavedFrame);
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent PTBase: 0x%x, childPCB PTBase: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (uint32)childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
   dbprintf('p', "ProcessRealFork (%d): PRE MOVE: parent sysStackPtr: 0x%x, childPCB sysStackPtr: 0x%x.\n", GetCurrentPid(), (uint32)currentPCB->sysStackPtr, (uint32)childPCB->sysStackPtr);
