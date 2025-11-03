@@ -460,9 +460,10 @@ void printHeap(PCB *currentPCB) {
       dbprintf('y', ".");
     }
     else { dbprintf('y', " "); }
-    dbprintf('y', "%d", currentPCB->heapBuddyMap[i]);
+    dbprintf('y', "%d", currentPCB->heapBuddyMap[i] & ~MEM_HEAP_BUDDY_MAP_AVAIL);
     if (i % 16 == 0) {
       dbprintf('y', "\n");
     }
   }
+  dbprintf('y', "\n");
 }
