@@ -3,7 +3,7 @@
 
 void main (int argc, char *argv[])
 {
-  uint32 *ptr;
+  int *ptr;
   Printf("hello_world (%d): Hello world!\n", getpid());
   Printf("hello_world (%d): malloc-ing 10 bytes\n", getpid());
   ptr = malloc(10);
