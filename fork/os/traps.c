@@ -361,7 +361,9 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
     case TRAP_PROCESS_FORK:
       dbprintf ('t', "Got a fork trap!\n");
       //TODO: Is this correct? Just call ProcessRealFork()?
-      ProcessRealFork(currentPCB);
+      ihandle = GetCurrentPid();
+      result = ProcessRealFork(currentPCB);
+      ProcessSetResult(currentPCB, result == ihandle ? result : 0); //Return child PID to parent, 0 to child
       break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");
