@@ -21,6 +21,10 @@ static uint32 pagestart;
 static int nfreepages;
 static int freemapmax;
 
+// Reference counter array for physical pages.
+static int ppageReferenceCounter[MEM_NUM_PAGE_TABLE_ENTRIES]; 
+// Num page table entries is the same as num physical pages
+
 //----------------------------------------------------------------------
 //
 //	This silliness is required because the compiler believes that
@@ -79,6 +83,11 @@ void MemoryModuleInit() {
     // i / 32 is which freemap entry this falls on
     // i % 32 is which bit in the entry it falls on
     freemap[i / 32] |= (0x1 << (i % 32)); //USEABLE IF 0, IN USE IF 1
+  }
+
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
+  {
+    ppageReferenceCounter[i] = 0;
   }
 }
 
@@ -305,12 +314,16 @@ int MemoryPageFaultHandler(PCB *pcb) {
 int MemoryAllocPage(void) {
   //USEABLE IF 0, IN USE IF 1
   int i;
-  for (i = 0; i < 512; i++)
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (!(freemap[i / 32] & (0x1 << (i % 32))))
     {
       freemap[i / 32] |= (0x1 << (i % 32));
-      dbprintf('z', "MemoryAllocPage (%d): page %d allocated\n", GetCurrentPid(), i); 
+      dbprintf('z', "MemoryAllocPage (%d): page %d allocated\n", GetCurrentPid(), i);
+      if (ppageReferenceCounter[i] != 0) {
+        dbprintf('m', "MemoryAllocPage (%d): incremented a page, but ppageReferenceCounter wasn't 0...?\n", GetCurrentPid());
+      }
+      ppageReferenceCounter[i]++;
       return i;
     }
   }
@@ -323,6 +336,12 @@ uint32 MemorySetupPte (uint32 page) {
 }
 
 void MemoryFreePage(uint32 page) {
+  if(--ppageReferenceCounter[page] > 0)
+  {
+    dbprintf('m', "MemoryFreePage (%d): Decremented reference counter for page %d, new value is %d\n", GetCurrentPid(), page, ppageReferenceCounter[page]);
+    return;
+  }
+
   uint32 mask = (0x1 << (page % 32)) ^ 0xFFFFFFFF;
 
   if (freemap[page / 32] & mask)
@@ -347,5 +366,19 @@ int mfree(void *ptr) {
 }
 
 void MemoryHandleROPAccess(PCB *pcb, uint32 iar) {
+  //TODO implement
   printf("MemoryHandleROPAccess: not implemented yet!\n");
+
+  /*
+  The operating system now has a decision to make inside its ROP_ACCESS handler.
+
+    If there is more than one process using this page, then the page should be copied byte-by-byte to a new page, and the corresponding PTE of the current process should be replaced with the new PTE, with the new PTE marked as read/write (i.e. the readonly bit is cleared).
+    If there is exactly one process using this page, it should be simply marked as read/write. No copying is necessary.
+*/
+}
+
+void MemIncrementReferenceCounter(uint32 page) {
+  int temp = ppageReferenceCounter[page];
+  ppageReferenceCounter[page]++;
+  dbprintf('m', "MemIncrementReferenceCounter: incrementing page %d from %d to %d.\n", GetCurrentPid(), temp, ppageReferenceCounter[page]);
 }

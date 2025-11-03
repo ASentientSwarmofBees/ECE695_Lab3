@@ -305,7 +305,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
 int MemoryAllocPage(void) {
   //USEABLE IF 0, IN USE IF 1
   int i;
-  for (i = 0; i < 512; i++)
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (!(freemap[i / 32] & (0x1 << (i % 32))))
     {

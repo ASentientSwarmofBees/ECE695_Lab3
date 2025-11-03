@@ -94,7 +94,6 @@ int ProcessGetCodeInfo(const char *file, uint32 *startAddr, uint32 *codeStart, u
 int ProcessGetFromFile(int fd, unsigned char *buf, uint32 *addr, int max);
 uint32 get_argument(char *string);
 
-
 
 //----------------------------------------------------------------------
 //
@@ -139,6 +138,13 @@ void ProcessModuleInit () {
       exitsim();
     }
   }
+
+  // Initialize the reference counter array for physical pages.
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
+  {
+    referenceCounter[i] = 0;
+  }
+
   // There are no processes running at this point, so currentPCB=NULL
   currentPCB = NULL;
   dbprintf ('p', "Leaving ProcessModuleInit\n");
@@ -489,8 +495,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[3]);
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcb->pagetable[512-1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
-    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[512-1]);
+    pcb->pagetable[MEM_NUM_PAGE_TABLE_ENTRIES-1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
+    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[MEM_NUM_PAGE_TABLE_ENTRIES-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
@@ -1105,19 +1111,119 @@ The items that need to be fixed for this lab in DLXOS are:
 */
 //--------------------------------------------------------------------------
 int ProcessRealFork(PCB *currentPCB) {
-  //TODO implement
-
-  //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
-  //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
+  PCB *childpcb;
+  int intrs;               // Stores previous interrupt settings.
+  int newSystemStackPage; // for storing childPCB's new system stack page
 
   //When either the parent or child tries to write to one of the shared pages, the hardware will throw a 
   //TRAP_ROP_ACCESS exception (trap number 0x8 in DLXOS). The page which caused the exception will be stored in 
   //the PROCESS_STACK_FAULT register in the currentSavedFrame of the PCB.
+  
+  intrs = DisableIntrs ();
+  dbprintf ('I', "Old interrupt value was 0x%x.\n", intrs);
+  dbprintf ('p', "Entering ProcessRealFork.\n");
+  // Get a free PCB for the new process
+  if (AQueueEmpty(&freepcbs)) {
+    printf ("FATAL error: no free processes!\n");
+    exitsim ();	// NEVER RETURNS!
+  }
+  childPCB = (PCB *)AQueueObject(AQueueFirst (&freepcbs));
+  dbprintf ('p', "Got a link @ 0x%x\n", (int)(childPCB->l));
+  if (AQueueRemove (&(childPCB->l)) != QUEUE_SUCCESS) {
+    printf("FATAL ERROR: could not remove link from freepcbsQueue in ProcessFork!\n");
+    exitsim();
+  }
+  // This prevents someone else from grabbing this process
+  ProcessSetStatus (childPCB, PROCESS_STATUS_RUNNABLE);
+
+  // At this point, the PCB is allocated and nobody else can get it.
+  // However, it's not in the run queue, so it won't be run.  Thus, we
+  // can turn on interrupts here.
+  RestoreIntrs (intrs);
+
+  
+  //  ^
+  //  |
+  //  | everything up there was taken from ProcessFork()
+
+  bcopy((char *)currentPCB, (char *)childpcb, sizeof(PCB));
+
+  //the child's page table points to the same physical pages as the parent's page table. All the valid PTE's in 
+  //the parent and the child are marked as readonly by setting the MEMORY_PTE_READONLY bit.
+  for (int i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
+  {
+    if (currentPCB->pagetable[i] & MEM_PTE_VALID) {
+      currentPCB->pagetable[i] |= MEM_PTE_READONLY;
+      childPCB->pagetable[i] |= MEM_PTE_READONLY;
 
   //the operating system to keep a global array of reference counters that are associated with each physical page.
   //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 
   //physical page is freed from a process's page table, the counter should be decremented. Once the counter for a 
   //particular page reaches 0, it should be marked as free in the global freemap. 
-  printf("ProcessRealFork: Not implemented yet!\n");
-  return -1;
+      MemIncrementReferenceCounter(currentPCB->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM);
+    }
+  }
+
+  /*
+  do not forget to fix the various system stack pointers and values on the system stack when creating the new 
+system stack page. 
+any addresses that point into the system stack can be broken down as: address = (page_base_address + offset), in 
+the same way that one-level paging has a page base address and an offset. Therefore, when copying the system 
+stack, as long as you know which addresses to fix that point into the system stack, you can fix them by finding 
+the offset portion of those addresses in the parent, and adding it to the new page base address in the child. 
+
+The items that need to be fixed for this lab in DLXOS are:
+
+    the sysStackPtr field in the child's PCB
+    the currentSavedFrame field in the child's PCB
+    the PROCESS_STACK_PTBASE field within the current saved frame (this is not computed by finding an offset, but 
+      rather is simply set to the base address of the child's level 1 page table).
+  */
+
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent currentSavedFrame: 0x%x, childPCB currentSavedFrame: 0x%x.\n", GetCurrentPid(), currentPCB->currentSavedFrame, childPCB->currentSavedFrame);
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent PTBase: 0x%x, childPCB PTBase: 0x%x.\n", GetCurrentPid(), currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
+  dbprintf('m', "ProcessRealFork (%d): PRE MOVE: parent sysStackPtr: 0x%x, childPCB sysStackPtr: 0x%x.\n", GetCurrentPid(), currentPCB->sysStackPtr, childPCB->sysStackPtr);
+
+  // Allocate a new page for the system stack of the child process
+  newSystemStackPage = MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM;
+  dbprintf('m', "ProcessRealFork(%d): Allocated new page for child sys stack at 0x%x\n", GetCurrentPid(), newSystemStackPage);
+
+  // Copy over the system stack byte by byte
+  dbprintf('m', "ProcessRealFork(%d): Calling copying system stack contents.\n", GetCurrentPid());
+  bcopy(currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], newSystemStackPage, MEM_PAGESIZE);
+
+  childPCB->currentSavedFrame = (childPCB->currentSavedFrame && 0x00000FFF) | newSystemStackPage;
+  dbprintf('m', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), childPCB->currentSavedFrame);
+  childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] = (childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] && 0x00000FFF) | newSystemStackPage;
+  dbprintf('m', "ProcessRealFork(%d): updated childPCB PTBase to 0x%x.\n", GetCurrentPid(), childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
+  childPCB->sysStackPtr = (childPCB->sysStackPtr && 0x00000FFF) | newSystemStackPage;
+  dbprintf('m', "ProcessRealFork(%d): updated childPCB sysStackPtr to 0x%x.\n", GetCurrentPid(), childPCB->sysStackPtr);
+
+  for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
+  {
+    if (currentPCB->pagetable[i] & MEM_PTE_VALID)
+    {
+      dbprintf('m', "ProcessRealFork: parent PTE[%d] is 0x%x, child PTE[%d] is 0x%x.\n", i, currentPCB->pagetable[i], i, childPCB->pagetable[i]);
+    }
+  }
+
+  //  | everything down here was also taken from ProcessFork()
+  //  |
+  //  v 
+
+  // Place the childPCB onto the run queue.
+  intrs = DisableIntrs ();
+  if ((childPCB->l = AQueueAllocLink(childPCB)) == NULL) {
+    printf("FATAL ERROR: could not get link for forked PCB in ProcessFork!\n");
+    exitsim();
+  }
+  if (AQueueInsertLast(&runQueue, childPCB->l) != QUEUE_SUCCESS) {
+    printf("FATAL ERROR: could not insert link into runQueue in ProcessFork!\n");
+    exitsim();
+  }
+  RestoreIntrs (intrs);
+
+  // Return the process number (found by subtracting the PCB number
+  // from the base of the PCB array).
+  return (childPCB - pcbs);
 }

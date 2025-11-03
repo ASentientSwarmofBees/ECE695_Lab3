@@ -489,8 +489,8 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('p', "ProcessFork (%d): Page 3 is 0x%x.\n", GetCurrentPid(), pcb->pagetable[3]);
 
     //-allocate initial virtual page for user stack at top of virtual address space (maximum page number)
-    pcb->pagetable[512-1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
-    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[512-1]);
+    pcb->pagetable[MEM_NUM_PAGE_TABLE_ENTRIES-1] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
+    dbprintf('p', "ProcessFork (%d): User stack is 0x%x.\n", GetCurrentPid(), pcb->pagetable[MEM_NUM_PAGE_TABLE_ENTRIES-1]);
 
     //-allocate single physical page for system stack, store address in its own special register that identifies
     //the system stack area
