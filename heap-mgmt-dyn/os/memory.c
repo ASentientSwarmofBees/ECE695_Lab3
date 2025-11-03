@@ -349,7 +349,7 @@ void *malloc(PCB *currentPCB, int memsize) {
   dbprintf('m', "malloc: Requested memory size %d (0x%x) bytes.\n", memsize, memsize);
 
   //Fail if memsize is less than or equal to 0 or greater than heap size
-  if (memsize <= 0 || memsize > MEM_PAGESIZE) {
+  if (memsize <= 0 || memsize > (MEM_HEAP_NUM_BLOCKS*32)) {
     dbprintf('m', "malloc: Requested memory size %d is invalid.\n", memsize);
     return NULL;
   }
