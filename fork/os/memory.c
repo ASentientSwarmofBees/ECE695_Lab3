@@ -367,49 +367,33 @@ int mfree(void *ptr) {
 }
 
 void MemoryHandleROPAccess(PCB *pcb) {
-  uint32 fault_page = pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> MEM_L1FIELD_FIRST_BITNUM;
+  uint32 fault_pte_page = pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> MEM_L1FIELD_FIRST_BITNUM;
+  uint32 fault_phys_page = pcb->pagetable[fault_pte_page] >> MEM_L1FIELD_FIRST_BITNUM
   int i = 0;  // loop variable
   uint32 newPage; //page for holding newly alloc'ed page, when necessary
 
-  dbprintf('m', "MemoryHandleROPAccess: Fault page: 0x%x (%d)\n", fault_page, fault_page);
+  //dbprintf('m', "MemoryHandleROPAccess: Fault page: 0x%x (%d)\n", fault_page, fault_page);
 
-  dbprintf('m', "MemoryHandleROPAccess: Page %d, ref count %d\n", fault_page, ppageReferenceCounter[fault_page]);
-  if(ppageReferenceCounter[fault_page] == 1) {
+  dbprintf('m', "MemoryHandleROPAccess: PTE page %d, Phys page %d, ref count %d\n", fault_pte_page, fault_phys_page, ppageReferenceCounter[fault_phys_page]);
+  if(ppageReferenceCounter[fault_phys_page] == 1) {
     //If there is exactly one process using this page, it should be simply marked as read/write. No copying is 
     //necessary.
     // first have to find the right page table entry.
-    for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++) {
-      if ((pcb->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM) == fault_page) {
-        //Found! mark as read/write.
-        pcb->pagetable[i] &= ~MEM_PTE_READONLY;
-        dbprintf('m', "MemoryHandleROPAccess: Page %d set to read/write @PTE[%d]\n", fault_page, i);
-        return;
-      }
-    }
-    //page was never found in PTE
-    dbprintf('m', "MemoryHandleROPAccess: Page %d not found in PTE\n", fault_page);
-    ProcessKill();
+    pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
+    dbprintf('m', "MemoryHandleROPAccess: PTE %d set to read/write\n", fault_pte_page);
     return;
   }
-  else if(ppageReferenceCounter[fault_page] > 1) {
+  else if(ppageReferenceCounter[fault_phys_page] > 1) {
     //If there is more than one process using this page, then the page should be copied byte-by-byte to a new 
     //page, and the corresponding PTE of the current process should be replaced with the new PTE, with the new 
     //PTE marked as read/write (i.e. the readonly bit is cleared).
     
-    // first have to find the right page table entry.
-    for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++) {
-      if ((pcb->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM) == fault_page) {
-        newPage = MemoryAllocPage();
-        bcopy(pcb->pagetable[i], newPage, MEM_PAGESIZE);
-        pcb->pagetable[i] = ((uint32)pcb->pagetable[i] & 0x00000FFF) | newPage;
-        pcb->pagetable[i] &= ~MEM_PTE_READONLY;
-        dbprintf('m', "MemoryHandleROPAccess: Set PTE[%d] to 0x%x.\n", i, pcb->pagetable[i]);
-        return;
-      }
-    }
-    
-
-    ppageReferenceCounter[fault_page]--;
+    newPage = MemoryAllocPage();
+    bcopy(pcb->pagetable[fault_pte_page], newPage, MEM_PAGESIZE);
+    pcb->pagetable[fault_pte_page] = ((uint32)pcb->pagetable[fault_pte_page] & 0x00000FFF) | newPage;
+    pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
+    dbprintf('m', "MemoryHandleROPAccess: Set PTE[%d] to 0x%x.\n", fault_pte_page, pcb->pagetable[fault_pte_page]);
+    ppageReferenceCounter[fault_pte_page]--;
     return;
   }
   else
