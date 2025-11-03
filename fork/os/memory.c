@@ -394,7 +394,7 @@ void MemoryHandleROPAccess(PCB *pcb) {
     pcb->pagetable[fault_pte_page] = ((uint32)pcb->pagetable[fault_pte_page] & 0x00000FFF) | newPage;
     pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
     dbprintf('m', "MemoryHandleROPAccess (%d): Set PTE[%d] to 0x%x.\n", GetCurrentPid(), fault_pte_page, pcb->pagetable[fault_pte_page]);
-    ppageReferenceCounter[fault_pte_page]--;
+    ppageReferenceCounter[fault_phys_page]--;
   }
   else
   {
