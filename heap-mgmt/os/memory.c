@@ -483,7 +483,8 @@ int mfree(PCB *currentPCB, void *ptr) {
 
   //Now comes the hard part. Need to free neighboring blocks if they are also free, and continue recursively
   changeMade = 0;
-  while(changeMade == 0) {
+  while(changeMade != 0) {
+    changeMade = 0;
     if (blockIndex % (1 << (order + 1)) == 0) {
       //This is the first block in the pair
       if (currentPCB->heapBuddyMap[blockIndex + (1 << order)] == order) {
@@ -517,7 +518,6 @@ int mfree(PCB *currentPCB, void *ptr) {
       //keep searching for more merges at next order
       order++;
       dbprintf('y', "mfree: Continuing to look for merges at order %d.\n", order);
-      changeMade = 0;
     }
   }
   dbprintf('y', "mfree: Finished merging heap blocks.\n");
