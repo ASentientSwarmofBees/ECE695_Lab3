@@ -451,6 +451,9 @@ int mfree(PCB *currentPCB, void *ptr) {
   uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
   int blockOffset, blockIndex;
 
+  dbprintf('y', "Entering mfree.\n");
+  printHeap(currentPCB);
+
   dbprintf('y', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
   vaddr = (uint32)ptr;
   paddr = MemoryTranslateUserToSystem(currentPCB, vaddr);
