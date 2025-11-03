@@ -360,6 +360,8 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PROCESS_FORK:
       dbprintf ('t', "Got a fork trap!\n");
+      //TODO: Is this correct? Just call ProcessRealFork()?
+      ProcessRealFork();
       break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");

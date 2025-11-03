@@ -74,6 +74,14 @@ _Printf:
 	nop
 .endproc _Printf
 
+.proc _fork
+.global _fork
+_fork:
+	trap 	#0x430
+	jr	r31
+	nop
+.endproc _fork
+
 .proc _getpid
 .global _getpid
 _getpid:
