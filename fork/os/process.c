@@ -1184,14 +1184,14 @@ The items that need to be fixed for this lab in DLXOS are:
   dbprintf('p', "ProcessRealFork(%d): Allocated new page for child sys stack at 0x%x\n", GetCurrentPid(), newSystemStackPage);
 
   // Copy over the system stack byte by byte
-  dbprintf('p', "ProcessRealFork(%d): Calling copying system stack contents.\n", GetCurrentPid());
+  dbprintf('p', "ProcessRealFork(%d): Copying system stack contents.\n", GetCurrentPid());
   bcopy((char *)currentPCB->currentSavedFrame[PROCESS_STACK_PTBASE], (char *)newSystemStackPage, MEM_PAGESIZE);
 
-  childPCB->currentSavedFrame = (uint32)((childPCB->currentSavedFrame && 0x00000FFF) | newSystemStackPage);
+  childPCB->currentSavedFrame = (uint32)((childPCB->currentSavedFrame & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame);
-  childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] = (childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] && 0x00000FFF) | newSystemStackPage;
+  childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] = childPCB->pagetable;
   dbprintf('p', "ProcessRealFork(%d): updated childPCB PTBase to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
-  childPCB->sysStackPtr = (uint32)((childPCB->sysStackPtr && 0x00000FFF) | newSystemStackPage);
+  childPCB->sysStackPtr = (uint32)((childPCB->sysStackPtr & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB sysStackPtr to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->sysStackPtr);
 
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
