@@ -414,8 +414,8 @@ void *malloc(PCB *currentPCB, int memsize) {
             currentPCB->heapBuddyMap[i] = splittingOrder-1;
           }
           blockToSplitFound = 1;
-          printf("Created a right child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1, blockOffset-4, (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
-          printf("Created a left child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1,  blockOffset-4 + (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
+          printf("Created a right child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1,  blockOffset-4 + (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
+          printf("Created a left child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1, blockOffset-4, (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
           break;
         }
       }
