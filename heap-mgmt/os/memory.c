@@ -399,6 +399,11 @@ void *malloc(PCB *currentPCB, int memsize) {
     splittingOrder = order;
     while(!blockToSplitFound) {
       splittingOrder++;
+      if (splittingOrder > 7) {
+          // No blocks available to split
+          dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
+          return NULL;
+      }
       dbprintf('y', "malloc: Looking for block of order %d to split.\n", splittingOrder);
       for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << splittingOrder)) {
         if (currentPCB->heapBuddyMap[blockIndex] == (splittingOrder)) {
@@ -411,17 +416,8 @@ void *malloc(PCB *currentPCB, int memsize) {
           break;
         }
       }
-      dbprintf('y', "malloc: block split search for loop done\n");
-      if (!blockToSplitFound) {
-        order++;
-        if (order > 7) {
-          // No blocks available to split
-          dbprintf('y', "malloc: Could not find a free block of size %d bytes.\n", memsize);
-          return NULL;
-        }
-      }
-      if (blockToSplitFound) {
-        if (splittingOrder != order+1) {
+      //dbprintf('y', "malloc: block split search for loop done\n");
+      if (blockToSplitFound && splittingOrder != order+1) {
           // Need to keep splitting until we reach desired order
           dbprintf('y', "malloc: Split block to order %d, need to keep splitting to reach order %d.\n", splittingOrder-1, order);
           blockToSplitFound = 0;
