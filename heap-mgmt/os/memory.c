@@ -370,12 +370,12 @@ void *malloc(PCB *currentPCB, int memsize) {
   Order 1: 64 bytes
   Order 0: 32 bytes
   */
-  for (order = 0; order <= 7; order++) {
-    if (memsize <= (1 << (order + 5))) { //2^5 = 32
+  for (order = 0; order <= MEM_HEAP_MAX_ORDER; order++) {
+    if (memsize <= (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0))) { //2^5 = 32
       break;
     }
   }
-  dbprintf('m', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + 5)));
+  dbprintf('m', "malloc: Requested memory size %d bytes fits in order %d block of size %d bytes.\n", memsize, order, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
   //order is now set to the smallest order that can fit memsize
   while(!allocationCompleted)
   {
@@ -390,7 +390,7 @@ void *malloc(PCB *currentPCB, int memsize) {
           currentPCB->heapBuddyMap[i] = order | 0x8; //Set avail bit to 1
         }
         allocationCompleted = 1;
-        printf("Allocated the block: order = %d, addr = %x, requested mem size = %d, block size = %d\n", order, blockIndex * 32, memsize, (1 << (order + 5)));
+        printf("Allocated the block: order = %d, addr = %x, requested mem size = %d, block size = %d\n", order, blockIndex * 32, memsize, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
         break;
       }
     }
@@ -400,7 +400,7 @@ void *malloc(PCB *currentPCB, int memsize) {
     splittingOrder = order;
     while(!blockToSplitFound) {
       splittingOrder++;
-      if (splittingOrder > 7) {
+      if (splittingOrder > MEM_HEAP_MAX_ORDER) {
           // No blocks available to split
           dbprintf('m', "malloc: Could not find a free block of size %d bytes.\n", memsize);
           return NULL;
@@ -414,8 +414,8 @@ void *malloc(PCB *currentPCB, int memsize) {
             currentPCB->heapBuddyMap[i] = splittingOrder-1;
           }
           blockToSplitFound = 1;
-          printf("Created a right child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1, blockOffset-4, (1 << (splittingOrder-1 + 5)), splittingOrder, blockOffset-4, (1 << (splittingOrder + 5)));
-          printf("Created a left child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1,  blockOffset-4 + (1 << (splittingOrder-1 + 5)), (1 << (splittingOrder-1 + 5)), splittingOrder, blockOffset-4, (1 << (splittingOrder + 5)));
+          printf("Created a right child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1, blockOffset-4, (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
+          printf("Created a left child node (order = %d, addr = %x, size = %d) of parent (order = %d, addr = %x, size = %d)\n", splittingOrder-1,  blockOffset-4 + (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), (1 << (splittingOrder-1 + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), splittingOrder, blockOffset-4, (1 << (splittingOrder + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
           break;
         }
       }
@@ -477,14 +477,14 @@ int mfree(PCB *currentPCB, void *ptr) {
   order = currentPCB->heapBuddyMap[blockIndex] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
   //dbprintf('m', "mfree: Block at index %d is of order %d.\n", blockIndex, order);
 
-  dbprintf('m', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + 5)), blockOffset);
+  dbprintf('m', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), blockOffset);
   //order = currentPCB->heapBuddyMap[((uint32)ptr - (currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM)) / 32] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
 
   //Mark all blocks in this allocation as free
   for(i = blockIndex; i < blockIndex + (1 << order); i++) {
     currentPCB->heapBuddyMap[i] = order; //Set avail bit to 0
   }
-  printf("Freed the block: order = %d, addr = %x, size = %d\n", order, blockOffset, (1 << (order + 5)));
+  printf("Freed the block: order = %d, addr = %x, size = %d\n", order, blockOffset, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
 
   //Now comes the hard part. Need to free neighboring blocks if they are also free, and continue recursively
   changeMade = 1;
@@ -495,7 +495,7 @@ int mfree(PCB *currentPCB, void *ptr) {
       if (currentPCB->heapBuddyMap[blockIndex + (1 << order)] == order) {
         //The buddy block is also free, so merge
         dbprintf('m', "mfree: Merging block at index %d with buddy at index %d to form order %d block.\n", blockIndex, blockIndex + (1 << order), order + 1);
-        printf("Coalesced buddy nodes (order = %d, addr = %x, size = %d) & (order = %d, addr = %x, size = %d)\n", order, blockIndex * 32, (1 << (order + 5)), order, (blockIndex + (1 << order)) * 32, (1 << (order + 5)));
+        printf("Coalesced buddy nodes (order = %d, addr = %x, size = %d) & (order = %d, addr = %x, size = %d)\n", order, blockIndex * 32, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)), order, (blockIndex + (1 << order)) * 32, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
         printf("into the parent node (order = %d, addr = %x, size = %d)\n", order + 1, blockIndex * 32, (1 << (order + 6)));
         for(i = blockIndex; i < blockIndex + (1 << (order + 1)); i++) {
           currentPCB->heapBuddyMap[i] = order + 1; //Set avail bit to 0
