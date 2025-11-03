@@ -452,7 +452,7 @@ int mfree(PCB *currentPCB, void *ptr) {
   int blockOffset, blockIndex;
 
   dbprintf('y', "Entering mfree.\n");
-  printHeap(currentPCB);
+  //printHeap(currentPCB);
 
   dbprintf('y', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
   vaddr = (uint32)ptr;
@@ -464,6 +464,7 @@ int mfree(PCB *currentPCB, void *ptr) {
   dbprintf('y', "mfree: Block offset is %d bytes, block index is %d.\n", blockOffset, blockIndex);
 
   //check to make sure that block is in use
+  dbprintf('y', "mfree: Buddy map entry at index %d is 0x%x.\n", blockIndex, currentPCB->heapBuddyMap[blockIndex]);
   if (currentPCB->heapBuddyMap[blockIndex] & MEM_HEAP_BUDDY_MAP_AVAIL) {
     dbprintf('y', "mfree: Error - block at index %d is not currently allocated.\n", blockIndex);
     return -1;
