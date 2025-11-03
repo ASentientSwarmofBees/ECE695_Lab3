@@ -382,7 +382,6 @@ void MemoryHandleROPAccess(PCB *pcb) {
     // first have to find the right page table entry.
     pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
     dbprintf('m', "MemoryHandleROPAccess (%d): PTE %d set to read/write\n", GetCurrentPid(), fault_pte_page);
-    return;
   }
   else if(ppageReferenceCounter[fault_phys_page] > 1) {
     //If there is more than one process using this page, then the page should be copied byte-by-byte to a new 
@@ -396,14 +395,13 @@ void MemoryHandleROPAccess(PCB *pcb) {
     pcb->pagetable[fault_pte_page] &= ~MEM_PTE_READONLY;
     dbprintf('m', "MemoryHandleROPAccess (%d): Set PTE[%d] to 0x%x.\n", GetCurrentPid(), fault_pte_page, pcb->pagetable[fault_pte_page]);
     ppageReferenceCounter[fault_pte_page]--;
-    return;
   }
   else
   {
     dbprintf('m', "MemoryHandleROPAccess (%d) : Reference counter is 0 or less...???\n", GetCurrentPid());
     ProcessKill();
-    return;
   }
+  dbprintf('m', "Leaving MemoryHandleROPAccess\n");
 }
 
 void MemIncrementReferenceCounter(uint32 page) {
