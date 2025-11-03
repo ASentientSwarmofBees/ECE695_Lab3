@@ -368,7 +368,7 @@ int mfree(void *ptr) {
 
 void MemoryHandleROPAccess(PCB *pcb) {
   uint32 fault_pte_page = pcb->currentSavedFrame[PROCESS_STACK_FAULT] >> MEM_L1FIELD_FIRST_BITNUM;
-  uint32 fault_phys_page = pcb->pagetable[fault_pte_page] >> MEM_L1FIELD_FIRST_BITNUM
+  uint32 fault_phys_page = pcb->pagetable[fault_pte_page] >> MEM_L1FIELD_FIRST_BITNUM;
   int i = 0;  // loop variable
   uint32 newPage; //page for holding newly alloc'ed page, when necessary
 
