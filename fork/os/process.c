@@ -1150,11 +1150,11 @@ int ProcessRealFork(PCB *currentPCB) {
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
     if (currentPCB->pagetable[i] & MEM_PTE_VALID) {
-      dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x. Setting readonly bit.\n", i, currentPCB->pagetable[i]);
+      //dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x. Setting readonly bit.\n", i, currentPCB->pagetable[i]);
       currentPCB->pagetable[i] |= MEM_PTE_READONLY;
-      dbprintf('p', "ProcessRealFork: child PTE[%d] is 0x%x. Setting readonly bit.\n", i, childPCB->pagetable[i]);
+      //dbprintf('p', "ProcessRealFork: child PTE[%d] is 0x%x. Setting readonly bit.\n", i, childPCB->pagetable[i]);
       childPCB->pagetable[i] |= MEM_PTE_READONLY;
-      dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child is 0x%x.\n", i, currentPCB->pagetable[i], childPCB->pagetable[i]);
+      //dbprintf('p', "ProcessRealFork: parent PTE[%d] is 0x%x, child is 0x%x.\n", i, currentPCB->pagetable[i], childPCB->pagetable[i]);
 
   //the operating system to keep a global array of reference counters that are associated with each physical page.
   //Whenever a physical page is put into any process's page table, the counter should be incremented. Whenever a 

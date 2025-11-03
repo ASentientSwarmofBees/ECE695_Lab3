@@ -363,12 +363,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       //TODO: Is this correct? Just call ProcessRealFork()?
       ProcessRealFork(currentPCB);
       break;
-    case TRAP_ROP_ACCESS:
-      //TODO: is this correct??? check if this works. the func is currently just a printf, so.
-      dbprintf ('t', "Got a read-only page access violation trap!\n");
-      // Handle read-only page access violation here
-      MemoryHandleROPAccess(currentPCB, iar);
-      break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");
       ProcessSuspend (currentPCB);
@@ -539,6 +533,12 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PAGEFAULT:
       MemoryPageFaultHandler(currentPCB);
+      break;
+    case TRAP_ROP_ACCESS:
+      //TODO: is this correct??? check if this works. the func is currently just a printf, so.
+      dbprintf ('t', "Got a read-only page access violation trap!\n");
+      // Handle read-only page access violation here
+      MemoryHandleROPAccess(currentPCB, iar);
       break;
     default:
       printf ("Got an unrecognized system interrupt (0x%x) - exiting!\n",
