@@ -438,16 +438,31 @@ void *malloc(PCB *currentPCB, int memsize) {
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
   dbprintf('y', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  printHeap(currentPCB);
   return (uint32*) blockVaddr;
 }
 
-//TODO implement
 int mfree(void *ptr) {
   int memsize;
   uint32 vaddr;
   uint32 paddr;
 
-  dbprintf('m', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
+  //dbprintf('m', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
 
+void printHeap(PCB *currentPCB) {
+  int i;
+
+  dbprintf("y", "Heap Buddy Map for process %d:\n", GetCurrentPid());
+  for (i = 0; i < MEM_HEAP_NUM_BLOCKS; i++) {
+    if (currentPCB->heapBuddyMap[i] & MEM_HEAP_BUDDY_MAP_AVAIL) {
+      dbprintf('y', ".");
+    }
+    else { dbprintf('y', " "); }
+    dbprintf('y', "%d", currentPCB->heapBuddyMap[i]);
+    if (i % 16 == 0) {
+      dbprintf('y', "\n");
+    }
+  }
+}
