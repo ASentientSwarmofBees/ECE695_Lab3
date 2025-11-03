@@ -448,14 +448,14 @@ int mfree(PCB *currentPCB, void *ptr) {
   uint32 paddr;
   int order;
 
-  dbprintf('m', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
+  dbprintf('y', "mfree: Freeing heap block at virtual address 0x%x.\n", (uint32)ptr);
   vaddr = (uint32)ptr;
   paddr = MemoryTranslateUserToSystem(currentPCB, vaddr);
-  dbprintf('m', "mfree: Corresponding physical address is 0x%x.\n", paddr);
+  dbprintf('y', "mfree: Corresponding physical address is 0x%x.\n", paddr);
 
   //order = currentPCB->heapBuddyMap[((uint32)ptr - (currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM)) / 32] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
 
-  dbprintf('m', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
+  dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
 
