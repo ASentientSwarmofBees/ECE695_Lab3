@@ -480,7 +480,7 @@ int mfree(PCB *currentPCB, void *ptr) {
   for(int i = blockIndex; i < blockIndex + (1 << order); i++) {
     currentPCB->heapBuddyMap[i] = order; //Set avail bit to 0
   }
-  printHeap(currentPCB);
+
   
   //dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
