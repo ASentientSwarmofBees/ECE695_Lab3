@@ -483,7 +483,7 @@ int mfree(PCB *currentPCB, void *ptr) {
 
   //Now comes the hard part. Need to free neighboring blocks if they are also free, and continue recursively
   changeMade = 0;
-  while(!changeMade) {
+  while(changeMade == 0) {
     if (blockIndex % (1 << (order + 1)) == 0) {
       //This is the first block in the pair
       if (currentPCB->heapBuddyMap[blockIndex + (1 << order)] == order) {
