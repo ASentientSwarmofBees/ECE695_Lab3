@@ -387,7 +387,7 @@ void *malloc(PCB *currentPCB, int memsize) {
         // The block is free, so allocate it
         // Need to set all other blocks in this range to indicate they are also part of this allocation
         for(i = blockIndex; i < blockIndex + (1 << order); i++) {
-          currentPCB->heapBuddyMap[i] = order | 0x8; //Set avail bit to 1
+          currentPCB->heapBuddyMap[i] = order | MEM_HEAP_BUDDY_MAP_AVAIL; //Set avail bit to 1
         }
         allocationCompleted = 1;
         printf("Allocated the block: order = %d, addr = %x, requested mem size = %d, block size = %d\n", order, blockIndex * 32, memsize, (1 << (order + MEM_HEAP_BIT_SHIFT_FOR_ORDER_0)));
