@@ -1141,9 +1141,9 @@ int ProcessRealFork(PCB *currentPCB) {
   //  |
   //  | everything up there was taken from ProcessFork()
 
-  dbprintf('p', "ProcessRealFork (%d): childPCB # before copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
+  //dbprintf('p', "ProcessRealFork (%d): childPCB # before copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
   bcopy((char *)currentPCB, (char *)childPCB, sizeof(PCB));
-  dbprintf('p', "ProcessRealFork (%d): childPCB # after copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
+  //dbprintf('p', "ProcessRealFork (%d): childPCB # after copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
 
   //generate new page table for child
 
@@ -1234,5 +1234,6 @@ The items that need to be fixed for this lab in DLXOS are:
 
   // Return the process number (found by subtracting the PCB number
   // from the base of the PCB array).
+  dbprintf('p', "ProcessRealFork (%d): Finished. child PID: %d.\n", GetCurrentPid(), (childPCB - pcbs));
   return (childPCB - pcbs);
 }
