@@ -336,7 +336,7 @@ void MemoryFreePage(uint32 page) {
   }
 }
 
-void *malloc(PCB currentPCB, int memsize) {
+void *malloc(PCB *currentPCB, int memsize) {
   uint32 blockVaddr;
   uint32 blockPaddr;
   uint32 heapBaseVaddr = currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
