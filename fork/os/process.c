@@ -1125,7 +1125,7 @@ int ProcessRealFork(PCB *currentPCB) {
   childPCB = (PCB *)AQueueObject(AQueueFirst (&freepcbs));
   dbprintf ('p', "Got a link @ 0x%x\n", (int)(childPCB->l));
   if (AQueueRemove (&(childPCB->l)) != QUEUE_SUCCESS) {
-    printf("FATAL ERROR: could not remove link from freepcbsQueue in ProcessFork!\n");
+    printf("FATAL ERROR: could not remove link from freepcbsQueue in ProcessRealFork!\n");
     exitsim();
   }
   // This prevents someone else from grabbing this process
@@ -1141,7 +1141,9 @@ int ProcessRealFork(PCB *currentPCB) {
   //  |
   //  | everything up there was taken from ProcessFork()
 
+  dbprintf('p', "ProcessRealFork (%d): childPCB # before copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
   bcopy((char *)currentPCB, (char *)childPCB, sizeof(PCB));
+  dbprintf('p', "ProcessRealFork (%d): childPCB # after copy: %d.\n", GetCurrentPid(), (childPCB - pcbs));
 
   //generate new page table for child
 
@@ -1221,11 +1223,11 @@ The items that need to be fixed for this lab in DLXOS are:
   // Place the childPCB onto the run queue.
   intrs = DisableIntrs ();
   if ((childPCB->l = AQueueAllocLink(childPCB)) == NULL) {
-    printf("FATAL ERROR: could not get link for forked PCB in ProcessFork!\n");
+    printf("FATAL ERROR: could not get link for forked PCB in ProcessRealFork!\n");
     exitsim();
   }
   if (AQueueInsertLast(&runQueue, childPCB->l) != QUEUE_SUCCESS) {
-    printf("FATAL ERROR: could not insert link into runQueue in ProcessFork!\n");
+    printf("FATAL ERROR: could not insert link into runQueue in ProcessRealFork!\n");
     exitsim();
   }
   RestoreIntrs (intrs);
