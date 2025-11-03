@@ -336,13 +336,14 @@ uint32 MemorySetupPte (uint32 page) {
 }
 
 void MemoryFreePage(uint32 page) {
+
+  uint32 mask = (0x1 << (page % 32)) ^ 0xFFFFFFFF;
+
   if(--ppageReferenceCounter[page] > 0)
   {
     dbprintf('m', "MemoryFreePage (%d): Decremented reference counter for page %d, new value is %d\n", GetCurrentPid(), page, ppageReferenceCounter[page]);
     return;
   }
-
-  uint32 mask = (0x1 << (page % 32)) ^ 0xFFFFFFFF;
 
   if (freemap[page / 32] & mask)
   {
