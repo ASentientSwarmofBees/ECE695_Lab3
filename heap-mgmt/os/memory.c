@@ -411,6 +411,7 @@ void *malloc(PCB *currentPCB, int memsize) {
           break;
         }
       }
+      dbprintf('y', "malloc: block split search for loop done\n");
       if (!blockToSplitFound) {
         order++;
         if (order > 7) {
@@ -442,7 +443,7 @@ void *malloc(PCB *currentPCB, int memsize) {
 
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
-  dbprintf('y', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  dbprintf('y', "malloc: Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
   return (uint32*) blockVaddr;
 }
 
