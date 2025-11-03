@@ -426,7 +426,7 @@ void *malloc(int memsize) {
       }
     }
   }
-  if (allocationComplete)
+  if (allocationCompleted)
   {
     blockOffset = blockIndex * 32; //32 bytes per block
   }
@@ -439,8 +439,8 @@ void *malloc(int memsize) {
 
   blockVaddr = heapBaseVaddr + blockOffset;
   blockPaddr = heapBasePaddr + blockOffset;
-  dbprintf('m', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
-  return (uint32*) vaddr;
+  dbprintf('m', "Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, blockVaddr, blockPaddr);
+  return (uint32*) blockVaddr;
 }
 
 //TODO implement
