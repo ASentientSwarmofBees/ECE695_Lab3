@@ -346,6 +346,8 @@ void *malloc(int memsize) {
   int allocationCompleted = 0;
   int blockToSplitFound = 0;
 
+  dbprintf('y', "malloc: Requested memory size %d (0x%x) bytes.\n", memsize, memsize);
+
   //Fail if memsize is less than or equal to 0 or greater than heap size
   if (memsize <= 0 || memsize > MEM_PAGESIZE) {
     dbprintf('y', "malloc: Requested memory size %d is invalid.\n", memsize);
