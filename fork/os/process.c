@@ -1104,7 +1104,7 @@ The items that need to be fixed for this lab in DLXOS are:
 
 */
 //--------------------------------------------------------------------------
-int ProcessRealFork(PCB *currentPCB) {
+int ProcessRealFork(PCB *currentPCB, PCB **childPCBToReturn) {
   PCB *childPCB;
   int intrs;               // Stores previous interrupt settings.
   int newSystemStackPage; // for storing childPCB's new system stack page
@@ -1238,5 +1238,6 @@ The items that need to be fixed for this lab in DLXOS are:
   // Return the process number (found by subtracting the PCB number
   // from the base of the PCB array).
   dbprintf('p', "ProcessRealFork (%d): Finished. child PID: %d.\n", GetCurrentPid(), (childPCB - pcbs));
+  *childPCBToReturn = childPCB;
   return (childPCB - pcbs);
 }
