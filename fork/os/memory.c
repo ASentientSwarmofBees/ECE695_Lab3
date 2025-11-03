@@ -341,8 +341,11 @@ void *malloc(int memsize) {
 
 }
 
-//TODO iimplement
+//TODO implement
 int mfree(void *ptr) {
   return -1;
 }
 
+void MemoryHandleROPAccess(PCB *pcb, uint32 iar) {
+  printf("MemoryHandleROPAccess: not implemented yet!\n");
+}

@@ -21,6 +21,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from, unsigned char *to, in
 int MemoryPageFaultHandler(PCB *pcb);
 int MemoryAllocPage();
 void MemoryFreePage();
+void MemoryHandleROPAccess(PCB *pcb, uint32 iar);
 
 //---------------------------------------------------------
 // Put your function prototypes here
