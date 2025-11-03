@@ -342,7 +342,7 @@ void *malloc(int memsize) {
   uint32 heapBaseVaddr = currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM;
   uint32 heapBasePaddr = ((uint32)currentPCB->pagetable[currentPCB->heapPTEPageNum]) & 0xFFFFF000;
   uint32 blockOffset;
-  int order, blockIndex, splittingOrder;
+  int order, blockIndex, splittingOrder, i;
   int allocationCompleted = 0;
   int blockToSplitFound = 0;
 
@@ -403,7 +403,7 @@ void *malloc(int memsize) {
           // Found a block to split
           dbprintf('m', "malloc: Found block of order %d at index %d to split.\n", splittingOrder, blockIndex);
           for(i = blockIndex; i < blockIndex + (1 << splittingOrder); i++) {
-            currentPCB->heapBuddyMap[i] = splittingOrder-1; //Second half
+            currentPCB->heapBuddyMap[i] = splittingOrder-1;
           }
           blockToSplitFound = 1;
           break;
