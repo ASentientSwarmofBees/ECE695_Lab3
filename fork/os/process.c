@@ -1197,11 +1197,11 @@ The items that need to be fixed for this lab in DLXOS are:
   //dbprintf('p', "newSystemStackPage 0x%x.\n", (uint32)newSystemStackPage); 
   //dbprintf('p', "with offset 0x%x.\n", (uint32)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF)) | newSystemStackPage);
 
-  childPCB->currentSavedFrame = (uint32)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF) | newSystemStackPage);
+  childPCB->currentSavedFrame = (uint32*)(((uint32)(childPCB->currentSavedFrame) & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB currentSavedFrame to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame);
-  childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] = childPCB->pagetable;
+  childPCB->currentSavedFrame[PROCESS_STACK_PTBASE] = (uint32*)childPCB->pagetable;
   dbprintf('p', "ProcessRealFork(%d): updated childPCB PTBase to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->currentSavedFrame[PROCESS_STACK_PTBASE]);
-  childPCB->sysStackPtr = (uint32)(((uint32)(childPCB->sysStackPtr) & 0x00000FFF) | newSystemStackPage);
+  childPCB->sysStackPtr = (uint32*)(((uint32)(childPCB->sysStackPtr) & 0x00000FFF) | newSystemStackPage);
   dbprintf('p', "ProcessRealFork(%d): updated childPCB sysStackPtr to 0x%x.\n", GetCurrentPid(), (uint32)childPCB->sysStackPtr);
 
   /*
