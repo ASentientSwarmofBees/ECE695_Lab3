@@ -191,10 +191,10 @@ void ProcessFreeResources (PCB *pcb) {
   //------------------------------------------------------------
 
   MemoryFreePage(pcb->sysStackArea);
-  MemoryFreePage(pcb->heapArea); //ADDED IN PART 3
   pcb->npages -= 2;
   for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++)
   {
+    //This should also free the heap, since it's in the PT
     if(pcb->pagetable[i] & MEM_PTE_VALID)
     {
       MemoryFreePage(pcb->pagetable[i] >> 12);
