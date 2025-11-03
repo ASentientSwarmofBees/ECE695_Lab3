@@ -473,9 +473,15 @@ int mfree(PCB *currentPCB, void *ptr) {
   order = currentPCB->heapBuddyMap[blockIndex] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
   //dbprintf('y', "mfree: Block at index %d is of order %d.\n", blockIndex, order);
 
-  dbprintf('y', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. Block size: %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + 5)), blockOffset);
+  dbprintf('y', "mfree: Freeing heap block at vaddr 0x%x, paddr 0x%x, order %d. %d bytes at offset %d.\n", vaddr, paddr, order, (1 << (order + 5)), blockOffset);
   //order = currentPCB->heapBuddyMap[((uint32)ptr - (currentPCB->heapPTEPageNum << MEM_L1FIELD_FIRST_BITNUM)) / 32] & ~MEM_HEAP_BUDDY_MAP_AVAIL;
 
+  //Mark all blocks in this allocation as free
+  for(int i = blockIndex; i < blockIndex + (1 << order); i++) {
+    currentPCB->heapBuddyMap[i] = order; //Set avail bit to 0
+  }
+  printHeap(currentPCB);
+  
   //dbprintf('y', "Freeing heap block of size %d bytes: virtual address 0x%x, physical address 0x%x.\n", memsize, vaddr, paddr);
   return -1;
 }
