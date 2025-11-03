@@ -516,7 +516,7 @@ int mfree(PCB *currentPCB, void *ptr) {
     {
       //keep searching for more merges at next order
       order++;
-      dbprint('y', "mfree: Continuing to look for merges at order %d.\n", order);
+      dbprintf('y', "mfree: Continuing to look for merges at order %d.\n", order);
       changeMade = 0;
     }
   }
