@@ -505,7 +505,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('p', "ProcessFork (%d): System Stack is 0x%x.\n", GetCurrentPid(), pcb->sysStackArea);
 
     //NEW TO PART 3: ALLOC PAGE FOR HEAP
-    pcb->heapPTEPageNum = MEM_NUM_PAGE_TABLE_ENTRIES-2;
+    pcb->heapPTEPageNum = 4; //page number 4, right after code+data pages, so the heap has room to grow downward
     pcb->pagetable[pcb->heapPTEPageNum] = (MemoryAllocPage() << MEM_L1FIELD_FIRST_BITNUM) | MEM_PTE_VALID;
 
     pcb->npages += 7;
