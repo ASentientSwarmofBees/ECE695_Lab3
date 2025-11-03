@@ -537,6 +537,7 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
     case TRAP_ROP_ACCESS:
       //TODO: is this correct??? check if this works. the func is currently just a printf, so.
       dbprintf ('t', "Got a read-only page access violation trap!\n");
+      printf("MEMORYROPACCESS TRAP\n");
       // Handle read-only page access violation here
       MemoryHandleROPAccess(currentPCB);
       break;

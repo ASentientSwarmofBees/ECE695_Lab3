@@ -371,6 +371,8 @@ void MemoryHandleROPAccess(PCB *pcb) {
   int i = 0;  // loop variable
   uint32 newPage; //page for holding newly alloc'ed page, when necessary
 
+  printf("MemoryHandleROPAccess HIT\n");
+
   dbprintf('m', "MemoryHandleROPAccess: Page %d, ref count %d\n", fault_page, ppageReferenceCounter[fault_page]);
   if(ppageReferenceCounter[fault_page] == 1) {
     //If there is exactly one process using this page, it should be simply marked as read/write. No copying is 
