@@ -306,6 +306,9 @@ int MemoryPageFaultHandler(PCB *pcb) {
     pcb->pagetable[fault_page] = (newpage << 12) | MEM_PTE_VALID;
     pcb->npages++;
     dbprintf('m', "MemoryPageFaultHandler (%d): allocated phys page %d -> PTE %d\n", GetCurrentPid(), newpage, fault_page);
+    if (VALID_HEAP_ACCESS == 1) {
+      printf("Allocated a physical page at %d to back up virtual page %d in the heap\n", newpage, fault_page);
+    }
     return MEM_SUCCESS;
 }
 
