@@ -392,12 +392,12 @@ void *malloc(int memsize) {
       }
     }
     if(allocationCompleted) { break; }
-    dpprintf('m', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
+    dbprintf('m', "malloc: No free block of order %d found, attempting to split larger block.\n", order);
     // Was not able to allocate at this order, need to find a block of next higher order to split in half
     splittingOrder = order;
     while(!blockToSplitFound) {
       splittingOrder++;
-      dpprintf('m', "malloc: Looking for block of order %d to split.\n", splittingOrder);
+      dbprintf('m', "malloc: Looking for block of order %d to split.\n", splittingOrder);
       for (blockIndex = 0; blockIndex <= MEM_HEAP_NUM_BLOCKS; blockIndex += (1 << splittingOrder)) {
         if (currentPCB->heapBuddyMap[blockIndex] == (splittingOrder)) {
           // Found a block to split
