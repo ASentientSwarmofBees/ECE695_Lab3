@@ -369,6 +369,7 @@ int mfree(void *ptr) {
 void MemoryHandleROPAccess(PCB *pcb, uint32 iar) {
   //TODO implement
   printf("MemoryHandleROPAccess: not implemented yet!\n");
+  ProcessKill();
 
   /*
   The operating system now has a decision to make inside its ROP_ACCESS handler.
