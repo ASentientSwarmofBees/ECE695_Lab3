@@ -374,7 +374,7 @@ void MemoryHandleROPAccess(PCB *pcb) {
 
   //dbprintf('m', "MemoryHandleROPAccess: Fault page: 0x%x (%d)\n", fault_page, fault_page);
 
-  dbprintf('m', "MemoryHandleROPAccess: PTE page %d, 0x%x, ref count %d\n", fault_pte_page, (uint32)pcb->pagetable[fault_pte_page], ppageReferenceCounter[fault_phys_page]);
+  dbprintf('m', "MemoryHandleROPAccess (%x): PTE page %d, 0x%x, ref count %d\n", GetCurrentPid(), fault_pte_page, (uint32)pcb->pagetable[fault_pte_page], ppageReferenceCounter[fault_phys_page]);
   if(ppageReferenceCounter[fault_phys_page] == 1) {
     //If there is exactly one process using this page, it should be simply marked as read/write. No copying is 
     //necessary.
