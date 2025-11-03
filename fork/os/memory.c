@@ -366,17 +366,56 @@ int mfree(void *ptr) {
   return -1;
 }
 
-void MemoryHandleROPAccess(PCB *pcb, uint32 iar) {
-  //TODO implement
-  printf("MemoryHandleROPAccess: not implemented yet!\n");
-  ProcessKill();
+void MemoryHandleROPAccess(PCB *pcb) {
+  uint32 fault_page = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
+  int i = 0;  // loop variable
+  uint32 newPage; //page for holding newly alloc'ed page, when necessary
 
-  /*
-  The operating system now has a decision to make inside its ROP_ACCESS handler.
+  dbprintf('m', "MemoryHandleROPAccess: Page %d, ref count %d\n", fault_page, ppageReferenceCounter[fault_page]);
+  if(ppageReferenceCounter[fault_page] == 1) {
+    //If there is exactly one process using this page, it should be simply marked as read/write. No copying is 
+    //necessary.
+    // first have to find the right page table entry.
+    for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++) {
+      if ((pcb->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM) == fault_page) {
+        //Found! mark as read/write.
+        pcb->pagetable[i] &= ~MEM_PTE_READONLY;
+        dbprintf('m', "MemoryHandleROPAccess: Page %d set to read/write @PTE[%d]\n", fault_page, i);
+        return;
+      }
+    }
+    //page was never found in PTE
+    dbprintf('m', "MemoryHandleROPAccess: Page %d not found in PTE\n", fault_page);
+    ProcessKill();
+    return;
+  }
+  else if(ppageReferenceCounter[fault_page] > 1) {
+    //If there is more than one process using this page, then the page should be copied byte-by-byte to a new 
+    //page, and the corresponding PTE of the current process should be replaced with the new PTE, with the new 
+    //PTE marked as read/write (i.e. the readonly bit is cleared).
+    
+    // first have to find the right page table entry.
+    for (i = 0; i < MEM_NUM_PAGE_TABLE_ENTRIES; i++) {
+      if ((pcb->pagetable[i] >> MEM_L1FIELD_FIRST_BITNUM) == fault_page) {
+        newPage = MemoryAllocPage();
+        bcopy(pcb->pagetable[i], newPage, MEM_PAGESIZE);
+        pcb->pagetable[i] = ((uint32)pcb->pagetable[i] & 0x00000FFF) | newPage;
+        pcb->pagetable[i] &= ~MEM_PTE_READONLY;
+        dbprintf('m', "MemoryHandleROPAccess: Set PTE[%d] to 0x%x.\n", i, pcb->pagetable[i]);
+        return;
+      }
+    }
+    
 
-    If there is more than one process using this page, then the page should be copied byte-by-byte to a new page, and the corresponding PTE of the current process should be replaced with the new PTE, with the new PTE marked as read/write (i.e. the readonly bit is cleared).
-    If there is exactly one process using this page, it should be simply marked as read/write. No copying is necessary.
-*/
+    ppageReferenceCounter[fault_page]--;
+    return;
+  }
+  else
+  {
+    dbprintf('m', "MemoryHandleROPAccess: Reference counter is 0 or less...???\n");
+    ProcessKill();
+    return;
+  }
 }
 
 void MemIncrementReferenceCounter(uint32 page) {

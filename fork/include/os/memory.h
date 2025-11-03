@@ -21,7 +21,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from, unsigned char *to, in
 int MemoryPageFaultHandler(PCB *pcb);
 int MemoryAllocPage();
 void MemoryFreePage();
-void MemoryHandleROPAccess(PCB *pcb, uint32 iar);
+void MemoryHandleROPAccess(PCB *pcb);
 void MemIncrementReferenceCounter(uint32 page);
 
 //---------------------------------------------------------
